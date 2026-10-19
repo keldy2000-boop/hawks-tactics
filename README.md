@@ -7,7 +7,8 @@ The playbook site for the Hawks: U12 girls, 9-a-side, playing 3-4-1 and 2-4-2. P
 ## Pages
 
 ```
-index.html            Home: pick the formation, links to every topic
+index.html            Home: next match and league table
+game-day.html         Game Day tab: pick the formation, links to the seven pages below it
 roles.html            How we play, your role in each position, three team rules
 board.html            Animated tactics board (shape, build-up, press, defend, attack)
 set-piece-roles.html  Every position's job at every restart
@@ -15,9 +16,10 @@ goal-kicks.html       Building from our goal kicks + pressing theirs
 corners.html          Attacking and defending corners
 throw-ins.html        Throw-in options
 quiz.html             10-question quiz for your position
+training.html         Training: when and where, this block's focus, what to bring, practise at home
 parents.html          Parents' guide
 vote.html             Player of the Month voting
-table.html            League table and fixtures (FA Full-Time)
+table.html            Fixtures tab: next match, league table, all our fixtures (FA Full-Time)
 assets/               crest, formation diagrams, shared styles and scripts
 ```
 
@@ -29,13 +31,15 @@ No build step and no dependencies. Open any page in a browser, or publish the fo
 |---|---|
 | Page tabs, team name, footer name | `assets/site.js` (top of the file) |
 | Team colours | `assets/site.css`: `--maroon` (claret) and `--sky` (sky blue) at the top, taken from the crest |
+| League table, fixtures, next match | `assets/league.js` (copy from FA Full-Time after each matchday; FA Full-Time can't be read live from the site) |
+| Home-screen icon | `assets/icon-*.png` (made from the crest) and `manifest.webmanifest` |
 | Message of the week | `assets/messages.js` (one line per week, changes every Monday) |
 | Board animations | `board.html`: the `FORMS` block |
 | Set-piece jobs per position | `set-piece-roles.html`: the `JOBS` block |
 | Quiz questions | `quiz.html`: `GENERAL`, `TEAM` and `ROLES` |
 | Squad numbers, vote link, season months | `vote.html`: the `SETTINGS` block |
 
-The formation picked on the home page is remembered on each phone. Content for one formation only goes inside `data-form="f341"` or `data-form="f242"`. A link can force a formation: `roles.html?f=242`.
+The formation picked on the Game Day page is remembered on each phone. Content for one formation only goes inside `data-form="f341"` or `data-form="f242"`. A link can force a formation: `roles.html?f=242`.
 
 Dashed sky-blue boxes mark content that's waiting on the coaches' meeting.
 

@@ -1,26 +1,38 @@
 /* AFC Tickton Hawks U12s — shared header, page tabs, formation choice and footer.
    Every page loads this at the very top of <body>, with its own heading in data-* attributes:
    <script src="assets/site.js" data-page="corners" data-eyebrow="..." data-h1="..." data-l2="..." data-sub="..."></script>
-   To add, remove or rename a page tab, edit PAGES below. */
+   To add, remove or rename a page tab, edit PAGES below.
+   A page with a parent (e.g. "game-day") sits under that tab: on the parent page and its children,
+   a second row of tabs lists the children. */
 (function(){
   "use strict";
 
   var TEAM = "AFC Tickton Hawks U12s";
   var FOOTER_NAME = "Tickton Hawks U12 Girls";
 
+  /* [file name, tab label, parent tab] */
   var PAGES = [
     ["index", "Home"],
-    ["roles", "Roles"],
-    ["board", "Board"],
-    ["set-piece-roles", "Set Pieces"],
-    ["goal-kicks", "Goal Kicks"],
-    ["corners", "Corners"],
-    ["throw-ins", "Throw-Ins"],
-    ["quiz", "Quiz"],
+    ["game-day", "Game Day"],
+    ["roles", "Roles", "game-day"],
+    ["board", "Board", "game-day"],
+    ["set-piece-roles", "Set Pieces", "game-day"],
+    ["goal-kicks", "Goal Kicks", "game-day"],
+    ["corners", "Corners", "game-day"],
+    ["throw-ins", "Throw-Ins", "game-day"],
+    ["quiz", "Quiz", "game-day"],
+    ["training", "Training"],
     ["parents", "Parents"],
     ["vote", "Vote"],
-    ["table", "Table"]
+    ["table", "Fixtures"]
   ];
+
+  /* Vote tab and links are hidden until voting is ready. Set to true to show them. */
+  var SHOW_VOTE = false;
+  if (!SHOW_VOTE) {
+    PAGES = PAGES.filter(function(p){ return p[0] !== "vote"; });
+    document.documentElement.setAttribute("data-vote", "off");
+  }
 
   var FORMS = {
     f341: { label: "3-4-1", tag: "Current shape" },
@@ -74,13 +86,12 @@
   var d = me.dataset;
   var page = d.page || "index";
 
-  var formBtns = Object.keys(FORMS).map(function(k){
-    return '<button type="button" data-pick-form="' + k + '" aria-pressed="' + (k === current) + '">' + FORMS[k].label + '</button>';
-  }).join("");
-
-  var tabs = PAGES.map(function(p){
-    return '<a href="' + p[0] + '.html"' + (p[0] === page ? ' aria-current="page"' : '') + '>' + p[1] + '</a>';
-  }).join("");
+  var mine = PAGES.filter(function(p){ return p[0] === page; })[0];
+  var section = mine && mine[2] ? mine[2] : page;
+  function link(p, on){ return '<a href="' + p[0] + '.html"' + (on ? ' aria-current="page"' : '') + '>' + p[1] + '</a>'; }
+  var tabs = PAGES.filter(function(p){ return !p[2]; }).map(function(p){ return link(p, p[0] === section); }).join("");
+  var kids = PAGES.filter(function(p){ return p[2] === section; });
+  var subs = kids.length ? '<div class="subtabs"><div class="wrap tabs-inner">' + kids.map(function(p){ return link(p, p[0] === page); }).join("") + '</div></div>' : "";
 
   me.insertAdjacentHTML("beforebegin",
     '<header class="hero"><div class="wrap hero-inner">' +
@@ -89,10 +100,9 @@
         '<p class="eyebrow">' + esc(d.eyebrow || TEAM) + '</p>' +
         '<h1>' + esc(d.h1 || "Hawks Playbook") + (d.l2 ? '<span class="l2">' + esc(d.l2) + '</span>' : '') + '</h1>' +
         (d.sub ? '<p class="sub">' + esc(d.sub) + '</p>' : '') +
-        '<div class="formsw" role="group" aria-label="Formation"><span class="lab">Formation</span>' + formBtns + '</div>' +
       '</div>' +
     '</div></header>' +
-    '<nav class="tabs" aria-label="Pages"><div class="wrap tabs-inner">' + tabs + '</div></nav>'
+    '<nav class="tabs" aria-label="Pages"><div class="wrap tabs-inner">' + tabs + '</div>' + subs + '</nav>'
   );
 
   document.addEventListener("click", function(e){
@@ -101,6 +111,7 @@
   });
 
   /* keep the active tab visible on narrow screens */
-  var active = document.querySelector('.tabs a[aria-current="page"]');
-  if (active && active.scrollIntoView) { active.parentNode.scrollLeft = active.offsetLeft - 16; }
+  [].forEach.call(document.querySelectorAll('nav.tabs [aria-current]'), function(a){
+    a.parentNode.scrollLeft = a.offsetLeft - 16;
+  });
 })();
