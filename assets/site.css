@@ -193,6 +193,29 @@ ul.fx .fx-d{font-weight:700}
 ul.fx .fx-v{grid-column:2;color:var(--mute);font-size:.88rem}
 @media(max-width:560px){ul.fx li{grid-template-columns:1fr}ul.fx .fx-v{grid-column:1}}
 
+/* "Add to home screen" and "Share" */
+.app-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:18px 0 0}
+.app-btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:10px 18px;border-radius:999px;
+  border:2px solid var(--sky);background:transparent;color:var(--paper);font-weight:600;font-size:.95rem}
+.app-actions .app-btn:first-child{background:var(--sky);color:#3B0F16}
+.app-btn:hover{border-color:#fff}
+.app-btn[hidden]{display:none}
+.app-dialog{border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--paper);padding:0;
+  width:min(420px,calc(100vw - 32px))}
+.app-dialog::backdrop{background:rgba(0,0,0,.6)}
+.app-dialog-in{padding:20px}
+.app-dialog h3{margin:0 0 12px}
+.app-dialog ol{margin:0 0 12px;padding-left:22px}
+.app-dialog li{margin-bottom:8px}
+.app-dialog li::marker{color:var(--sky);font-weight:700}
+.app-dialog .app-os{margin:10px 0 4px;font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--sky)}
+.app-dialog .app-note{color:var(--mute);font-size:.9rem;margin:0 0 14px}
+.app-dialog .app-link{word-break:break-all;background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:10px;user-select:all}
+.app-toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,20px);opacity:0;pointer-events:none;
+  background:var(--sky);color:#3B0F16;font-weight:600;padding:10px 16px;border-radius:999px;transition:opacity .2s,transform .2s;
+  max-width:calc(100vw - 32px);text-align:center;z-index:50}
+.app-toast.on{opacity:1;transform:translate(-50%,0)}
+
 /* FOOTER */
 footer{padding:28px 0 44px;text-align:center;color:var(--mute);font-size:.85rem}
 footer .ft{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:12px}
