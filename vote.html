@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hawks — Player of the Month</title>
+<link rel="icon" href="assets/crest.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+.monthflag{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.12em;
+  font-size:.8rem;background:var(--maroon);color:var(--sky);border-radius:3px;padding:3px 10px;margin-bottom:10px}
+.locked{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--sky);border-radius:6px;padding:20px;max-width:640px}
+.locked .big{font-family:'Archivo Black',sans-serif;font-size:clamp(1.15rem,3.5vw,1.6rem);line-height:1.15;margin:4px 0 6px}
+.locked p{margin:0;color:var(--mute)}
+.votegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+form.vote{background:var(--panel);border:1px solid var(--line);border-top:4px solid var(--sky);border-radius:6px;padding:18px}
+form.vote h3{margin:0 0 2px}
+form.vote .who{margin:0 0 12px;color:var(--mute);font-size:.92rem}
+form.vote label{display:block;font-weight:600;margin:12px 0 4px;font-size:.94rem}
+form.vote .req{color:var(--sky)}
+form.vote select,form.vote textarea{width:100%;font:inherit;color:var(--paper);background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:10px 12px;min-height:46px}
+form.vote textarea{min-height:90px;resize:vertical}
+form.vote .hint{font-size:.82rem;color:var(--mute);margin-top:4px}
+button.cast{margin-top:16px;width:100%;min-height:50px;border-radius:8px;border:0;background:var(--maroon);color:#fff;font-weight:700;font-size:1.05rem}
+button.cast:disabled{opacity:.55;cursor:default}
+.msg{margin-top:12px;padding:10px 12px;border-radius:6px;font-size:.92rem}
+.msg:empty{display:none}
+.msg.ok{background:#14281C;border:1px solid #3FA46A}
+.msg.err{background:#2A1216;border:1px solid #D0505E}
+.msg.info{background:var(--panel2);border:1px solid var(--line)}
+</style>
+</head>
+<body>
+<script src="assets/site.js" data-page="vote" data-eyebrow="Player of the Month" data-h1="Player of the Month" data-l2="Cast Your Vote" data-sub="Vote each month: one vote from the supporters, one from the players."></script>
+
+<section id="vote">
+  <div class="wrap">
+    <span class="monthflag" id="flag">Voting</span>
+    <h2 id="title">Player of the Month</h2>
+    <p class="sec-note">Two forms: supporters (parents and anyone watching) use the first, players use the second. One vote each, please. You can't vote for your own daughter, or for yourself. Players are listed by shirt number only.</p>
+
+    <div class="todo" id="setupNote" hidden>
+      <p class="tl">Not set up yet</p>
+      <ul id="setupList"></ul>
+    </div>
+
+    <div id="voteLocked" class="locked">
+      <span class="monthflag" id="lockFlag">Opens soon</span>
+      <div class="big" id="lockBig"></div>
+      <p id="lockSub"></p>
+    </div>
+
+    <div id="voteForms" class="votegrid" hidden>
+      <form class="vote" id="supportersForm" novalidate>
+        <h3>Supporters' Player</h3>
+        <p class="who">For parents and anyone watching the games.</p>
+        <label for="s_child">Your daughter's shirt number <span class="req">*</span></label>
+        <select id="s_child" name="voterNumber" required></select>
+        <p class="hint">So we can make sure you don't vote for your own daughter.</p>
+        <label for="s_vote">Your vote <span class="req">*</span></label>
+        <select id="s_vote" name="vote" required></select>
+        <label for="s_why">Why? <span class="req">*</span></label>
+        <textarea id="s_why" name="why" required></textarea>
+        <button type="submit" class="cast">Cast my vote</button>
+        <div class="msg" id="s_msg" role="status"></div>
+      </form>
+
+      <form class="vote" id="playersForm" novalidate>
+        <h3>Players' Player</h3>
+        <p class="who">For the players to vote for a teammate.</p>
+        <label for="p_self">Your shirt number <span class="req">*</span></label>
+        <select id="p_self" name="voterNumber" required></select>
+        <p class="hint">So you can't vote for yourself.</p>
+        <label for="p_vote">Your vote <span class="req">*</span></label>
+        <select id="p_vote" name="vote" required></select>
+        <label for="p_why">Why? <span class="req">*</span></label>
+        <textarea id="p_why" name="why" required></textarea>
+        <button type="submit" class="cast">Cast my vote</button>
+        <div class="msg" id="p_msg" role="status"></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  "use strict";
+  /* ---------- SETTINGS ----------
+     SCRIPT_URL: the web-app link from your own Google Apps Script (see README.md). Leave "" until it's set up.
+     SQUAD_NUMBERS: the girls' shirt numbers. Numbers only, never names.
+     SEASON_MONTHS: months that have a vote (0 = January ... 8 = September). */
+  var SCRIPT_URL = "";
+  var SQUAD_NUMBERS = [];
+  var SEASON_MONTHS = [8, 9, 10, 11, 0, 1, 2, 3, 4];
+  var VOTE_DAYS = 7;
+
+  var MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  function $(id){ return document.getElementById(id); }
+
+  /* Voting for month m opens on the Sunday after its last Saturday, for VOTE_DAYS days. */
+  function opens(y, m){
+    var d = new Date(y, m + 1, 0);
+    d.setDate(d.getDate() - ((d.getDay() + 1) % 7));
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate() + 1);
+  }
+  function closes(y, m){ var o = opens(y, m); return new Date(o.getFullYear(), o.getMonth(), o.getDate() + VOTE_DAYS); }
+  function inSeason(m){ return SEASON_MONTHS.indexOf(m) !== -1; }
+  function fmt(d){ return d.toLocaleDateString("en-GB", { weekday:"long", day:"numeric", month:"long" }); }
+
+  var now = new Date(), open = null, next = null;
+  for (var i = -1; i <= 12; i++) {
+    var dt = new Date(now.getFullYear(), now.getMonth() + i, 1), y = dt.getFullYear(), m = dt.getMonth();
+    if (!inSeason(m)) { continue; }
+    if (now >= opens(y, m) && now < closes(y, m)) { open = { y:y, m:m }; break; }
+    if (opens(y, m) > now) { next = { y:y, m:m }; break; }
+  }
+
+  var setup = [];
+  if (!SQUAD_NUMBERS.length) { setup.push("Squad shirt numbers need adding."); }
+  if (!SCRIPT_URL) { setup.push("The Google Sheet that stores votes needs connecting, so votes can't be sent yet."); }
+  if (setup.length) {
+    $("setupNote").hidden = false;
+    $("setupList").innerHTML = setup.map(function(s){ return "<li>" + s + "</li>"; }).join("");
+  }
+
+  if (open) {
+    var MONTH = MONTHS[open.m] + " " + open.y;
+    var last = new Date(closes(open.y, open.m).getTime() - 1);
+    $("flag").textContent = "Voting for " + MONTHS[open.m];
+    $("title").textContent = "Cast your " + MONTHS[open.m] + " vote";
+    $("voteLocked").hidden = true;
+    $("voteForms").hidden = false;
+    $("voteLocked").insertAdjacentHTML("afterend", '<p class="key" style="margin:0 0 16px">Voting closes at the end of ' + fmt(last) + '.</p>');
+    wire(MONTH);
+  } else {
+    $("flag").textContent = "Next vote";
+    if (next) {
+      $("title").textContent = MONTHS[next.m] + " Player of the Month";
+      $("lockBig").textContent = MONTHS[next.m] + " voting opens " + fmt(opens(next.y, next.m));
+      $("lockSub").textContent = "Come back then to vote for your " + MONTHS[next.m] + " Player of the Month.";
+    } else {
+      $("lockBig").textContent = "Voting returns next season";
+      $("lockSub").textContent = "See you in September.";
+    }
+  }
+
+  function fill(sel, placeholder){
+    sel.innerHTML = '<option value="" disabled selected>' + placeholder + '</option>' +
+      SQUAD_NUMBERS.map(function(n){ return '<option value="' + n + '">Number ' + n + '</option>'; }).join("");
+  }
+
+  function wire(MONTH){
+    fill($("s_child"), "Choose a number…"); fill($("s_vote"), "Choose a player's number…");
+    fill($("p_self"), "Choose a number…");  fill($("p_vote"), "Choose a teammate's number…");
+    function key(k){ return "hawksVote_" + k + "_" + MONTH; }
+    function voted(k){ try { return localStorage.getItem(key(k)) === "1"; } catch(e){ return false; } }
+    function mark(k){ try { localStorage.setItem(key(k), "1"); } catch(e){} }
+    function show(el, cls, t){ el.className = "msg " + cls; el.textContent = t; }
+
+    [["supportersForm","s_msg","Supporters","s_child","s_vote","s_why"],
+     ["playersForm","p_msg","Players","p_self","p_vote","p_why"]].forEach(function(f){
+      var form = $(f[0]), msg = $(f[1]), kind = f[2];
+      if (voted(kind)) { show(msg, "info", "Thanks, you've already voted for " + MONTH + " on this device."); }
+      form.addEventListener("submit", function(ev){
+        ev.preventDefault();
+        var self = $(f[3]).value, vote = $(f[4]).value, why = $(f[5]).value.trim();
+        if (!self || !vote || !why) { show(msg, "err", "Please fill in all three boxes."); return; }
+        if (self === vote) { show(msg, "err", kind === "Players" ? "You can't vote for yourself. Please pick a teammate." : "You can't vote for your own daughter. Please pick another player."); return; }
+        if (voted(kind)) { show(msg, "info", "You've already voted for " + MONTH + " on this device."); return; }
+        if (!SCRIPT_URL) { show(msg, "err", "Voting isn't connected yet, so your vote hasn't been sent. Please try again later."); return; }
+        var btn = form.querySelector("button.cast"); btn.disabled = true; btn.textContent = "Sending…";
+        var data = new FormData(form); data.append("voteType", kind); data.append("month", MONTH);
+        fetch(SCRIPT_URL, { method:"POST", body:data, mode:"no-cors" })
+          .then(function(){ mark(kind); form.reset(); show(msg, "ok", "Thanks for voting! Your " + kind + "' Player vote for " + MONTH + " has been recorded."); btn.textContent = "Vote recorded"; })
+          .catch(function(){ show(msg, "err", "Something went wrong sending your vote. Please try again in a moment."); btn.disabled = false; btn.textContent = "Cast my vote"; });
+      });
+    });
+  }
+})();
+</script>
+<script src="assets/messages.js"></script>
+<script>Hawks.footer();</script>
+</body>
+</html>

@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hawks — Quiz</title>
+<link rel="icon" href="assets/crest.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+.role-pick-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.role-pick-btn{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:8px;
+  padding:12px 14px;text-align:left;min-height:64px}
+.role-pick-btn:hover{border-color:var(--sky)}
+.role-pick-btn b{font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.06em;font-size:1.15rem}
+.quiz-card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:20px;max-width:720px}
+.quiz-progress{font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.1em;font-size:.85rem;color:var(--sky)}
+.quiz-q{font-family:Inter,sans-serif;text-transform:none;letter-spacing:0;font-size:1.2rem;font-weight:600;margin:8px 0 16px}
+.quiz-options{display:grid;gap:10px}
+.quiz-option{text-align:left;background:var(--panel2);border:2px solid var(--line);border-radius:8px;padding:12px 14px;min-height:52px}
+.quiz-option:hover:not(:disabled){border-color:var(--maroon-hi)}
+.quiz-option:disabled{cursor:default}
+.quiz-option.correct{border-color:#3FA46A;background:#14281C}
+.quiz-option.incorrect{border-color:#D0505E;background:#2A1216}
+.quiz-feedback{margin-top:14px;border-left:4px solid #3FA46A;background:var(--panel2);padding:10px 14px;border-radius:0 6px 6px 0}
+.quiz-feedback.wrong{border-left-color:#D0505E}
+.quiz-btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+.quiz-btn-primary,.quiz-btn-secondary{border-radius:8px;padding:12px 20px;font-weight:700;min-height:48px;border:2px solid var(--maroon)}
+.quiz-btn-primary{background:var(--maroon);color:#fff}
+.quiz-btn-secondary{background:transparent}
+.quiz-score{font-family:'Archivo Black',sans-serif;font-size:4rem;color:var(--sky);line-height:1;margin:10px 0}
+.quiz-score-sub{color:var(--mute);margin:0 0 20px}
+.quiz-review{display:grid;gap:10px;max-width:720px}
+.quiz-review-item{background:var(--panel);border:1px solid var(--line);border-left:4px solid #D0505E;border-radius:6px;padding:12px 14px}
+.quiz-review-item .rq{font-weight:600}
+.quiz-review-item .ra{color:#7FD3A0;margin-top:4px}
+.quiz-review-item .rf{color:var(--mute);font-size:.92rem;margin-top:2px}
+</style>
+</head>
+<body>
+<script src="assets/site.js" data-page="quiz" data-eyebrow="Test yourself" data-h1="Team Quiz" data-l2="Know Your Job" data-sub="Ten questions on your position and how we play. Shuffled every time."></script>
+
+<section id="quiz-app">
+  <div class="wrap">
+
+    <div id="screen-roles">
+      <p class="tag">Pick your position</p>
+      <h2>Choose your position</h2>
+      <p class="sec-note">Positions in the <b id="formLbl"></b>. Up to four questions on your position, the rest on how we play as a team. Shuffled every time you play.</p>
+      <div class="todo">
+        <p class="tl">Draft quiz</p>
+        <p>These questions come from the tactics board. Set-piece questions and the full set get added after the coaches' meeting.</p>
+      </div>
+      <div class="role-pick-grid" id="rolePicks"></div>
+    </div>
+
+    <div id="screen-quiz" class="hidden">
+      <p class="tag" id="quiz-role-tag">Question</p>
+      <h2 id="quiz-role-heading">Team Quiz</h2>
+      <div class="quiz-card">
+        <div class="quiz-progress" id="quiz-progress">Question 1 of 10</div>
+        <h3 class="quiz-q" id="quiz-question"></h3>
+        <div class="quiz-options" id="quiz-options"></div>
+        <div class="quiz-feedback hidden" id="quiz-feedback"></div>
+        <div class="quiz-btn-row">
+          <button type="button" class="quiz-btn-primary hidden" id="quiz-next">Next</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="screen-score" class="hidden">
+      <p class="tag">Result</p>
+      <h2>How did you do?</h2>
+      <div class="quiz-score" id="quiz-score-num">0/10</div>
+      <p class="quiz-score-sub" id="quiz-score-msg"></p>
+      <div id="quiz-review" class="quiz-review"></div>
+      <div class="quiz-btn-row">
+        <button type="button" class="quiz-btn-primary" id="btn-try-again">Try again</button>
+        <button type="button" class="quiz-btn-secondary" id="btn-pick-another">Pick another position</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+(function(){
+"use strict";
+/* ---------- QUESTIONS ----------
+   Each question: q = question, correct = right answer, wrong = three wrong answers, fb = feedback shown after answering.
+   GENERAL: any formation. TEAM: the whole team in that formation. ROLES: one position in that formation.
+   Add set-piece questions to a role's list after the meeting. */
+
+var GENERAL = [
+  {q:"You've made a mistake and lost the ball. Best reaction?",correct:"React straight away and help win it back",wrong:["Stop and complain","Blame a teammate","Drop your head"],fb:"Mistakes happen. React and go again."},
+  {q:"Which of these can you control in every game?",correct:"Your effort and attitude",wrong:["The score","The referee","The weather"],fb:"We focus on the things we can control. Good results tend to follow."},
+  {q:"A teammate makes a great tackle. What should you do?",correct:"Tell her. Praise it out loud",wrong:["Say nothing","Only praise goals","Wait until after the game"],fb:"Encouraging teammates is part of your job."},
+  {q:"What's the best way to get a better first touch?",correct:"Practise it, and use the coaches' feedback",wrong:["Hope it turns up on match day","Only play in matches","Never try it in training"],fb:"Ten minutes in the garden adds up."},
+  {q:"What gives you the most energy for your minutes on the pitch?",correct:"Good sleep and the right food and drink beforehand",wrong:["Staying up late","Skipping breakfast","Lots of fizzy drinks"],fb:"It starts the night before, not at kick-off."},
+  {q:"Things aren't going your way in a game. What helps most?",correct:"Get straight onto the next job",wrong:["Sulk","Stop running","Argue with the referee"],fb:"Being disappointed is fine. Giving up isn't."},
+  {q:"We lose, but everyone worked hard and made good decisions. Was it a good game?",correct:"Yes, lots went well even if the score didn't",wrong:["No, only the score matters","Only if someone scored","Only if the coach says so"],fb:"Effort, attitude, decisions and looking after the ball all count."}
+];
+
+var TEAM = {
+  f341:[
+    {q:"In the 3-4-1, what happens when we lose the ball?",correct:"The wingers drop back and we become a back five",wrong:["Everyone stays where they are","The striker drops into defence","The centre backs push up"],fb:"Without the ball: back five, two midfielders and the striker in front."},
+    {q:"When we have the ball, the wingers should…",correct:"Push high and wide",wrong:["Come inside","Drop into defence","Stand still"],fb:"High and wide stretches their team."},
+    {q:"Our keeper has the ball and they press. Where does the short pass usually go?",correct:"The middle centre back",wrong:["Straight to the striker","Kicked long","Out for a throw-in"],fb:"Short to the middle centre back. The keeper becomes an extra player."},
+    {q:"Their keeper has the ball. What's our trigger to press?",correct:"The pass goes to their centre back",wrong:["The keeper picks the ball up","The referee blows","Any time at all"],fb:"When it goes to their centre back, the striker closes her down."},
+    {q:"They switch the ball to the other wing. What does our team do?",correct:"The whole team slides across together",wrong:["Only the nearest player moves","Everyone stays put","Everyone runs back to our goal"],fb:"Slide across together and stay compact."},
+    {q:"A cross is coming in. Where does the striker go?",correct:"Near post",wrong:["Far post","She stays out wide","Back to halfway"],fb:"Striker near post, right winger far post, a midfielder on the edge."}
+  ],
+  f242:[
+    {q:"In the 2-4-2, what does our shape look like without the ball?",correct:"Four across the middle, two centre backs behind, the 10 and 9 in front",wrong:["Everyone in our own box","Five across the back","Everyone chasing the ball"],fb:"We shrink: a tight four in the middle with the centre backs behind."},
+    {q:"When we have the ball, the wing backs should…",correct:"Go high and wide",wrong:["Stay next to the centre backs","Come inside","Stand still"],fb:"High and wide with the ball. Back in the line without it."},
+    {q:"Our keeper has the ball and they press. What do the centre backs do?",correct:"Split wide",wrong:["Stand next to each other","Run up front","Stand behind the keeper"],fb:"Split wide so their press has to run across."},
+    {q:"Their keeper has the ball. What's our trigger to press?",correct:"The pass goes to their centre back",wrong:["The keeper picks the ball up","The referee blows","Any time at all"],fb:"The 9 closes her down and the 10 covers the pass back."},
+    {q:"They switch the ball to the other wing. What does our team do?",correct:"The whole team slides across together",wrong:["Only the nearest player moves","Everyone stays put","Everyone runs back to our goal"],fb:"Slide across together and stay compact."},
+    {q:"A cross is coming in. Where do the 9 and the 10 go?",correct:"The 9 near post, the 10 far post",wrong:["Both near post","Both stay outside the box","The 10 near post, the 9 stays out"],fb:"9 near post, 10 far post, wing back arrives at the back."}
+  ]
+};
+
+var ROLES = {
+  f341:{
+    gk:{badge:"GK",label:"Goalkeeper",questions:[
+      {q:"We're building from the back. Your first short pass usually goes to…",correct:"The middle centre back",wrong:["The striker","Kicked long","A winger"],fb:"Short to the middle centre back to start our attacks."},
+      {q:"When we play out from the back, you become…",correct:"An extra player in our build-up",wrong:["A spectator","A second striker","Someone who only kicks long"],fb:"You start our attacks."}
+    ]},
+    cb:{badge:"CB",label:"Centre Backs",questions:[
+      {q:"We're building from the keeper. What do the back three do?",correct:"Spread across the pitch",wrong:["Stand close together","Run up front","Stand on the goal line"],fb:"Spread across to give the keeper options."},
+      {q:"We lose the ball. Who drops in with you?",correct:"The wingers, so we become a back five",wrong:["The striker","Nobody","The keeper"],fb:"Back five without the ball."},
+      {q:"We win the ball high up in our press. What do the back three do?",correct:"Step up",wrong:["Drop to the goal line","Stand still","Run to the corner flag"],fb:"Step up and keep us compact."}
+    ]},
+    w:{badge:"W",label:"Wingers",questions:[
+      {q:"We have the ball. Where should you be?",correct:"High and wide",wrong:["In the middle","Next to the centre backs","Behind the keeper"],fb:"Wide and high with the ball."},
+      {q:"We lose the ball. What's your job?",correct:"Drop back to wing back",wrong:["Stay up front","Walk","Go to the other wing"],fb:"Drop to wing back without it."},
+      {q:"In our press, their centre back plays it wide to your side. You…",correct:"Jump to the player on the ball",wrong:["Wait for her to come to you","Run back to our goal","Leave it to the striker"],fb:"Jump to her, midfield slides across and we trap her on the touchline."}
+    ]},
+    cm:{badge:"CM",label:"Centre Midfielders",questions:[
+      {q:"We're building from the back. Where should you show for the ball?",correct:"In the gap behind their first line",wrong:["Right next to the centre back","On the halfway line, standing still","Up front"],fb:"Show in the gaps, then turn and play forward."},
+      {q:"We've just won the ball in our press. What do you do?",correct:"Take it and play quickly forward",wrong:["Pass back to the keeper","Hold it and wait","Kick it out"],fb:"They're still facing the wrong way, so go quickly."},
+      {q:"A cross is coming in. Where does a midfielder wait?",correct:"On the edge of the box",wrong:["On the goal line","By the corner flag","On halfway"],fb:"Ready for anything that drops out of the box."}
+    ]},
+    st:{badge:"ST",label:"Striker",questions:[
+      {q:"Their keeper passes to a centre back. What do you do?",correct:"Close her down and show her the touchline",wrong:["Stay where you are","Run to the keeper","Drop into midfield"],fb:"You lead the press on your own."},
+      {q:"The ball is played into your feet with your back to goal. You…",correct:"Hold it up and lay it off",wrong:["Turn into three defenders","Kick it out","Pass back to the keeper"],fb:"Hold it up, lay it off, then the winger runs beyond."},
+      {q:"A cross is coming in. Where do you go?",correct:"Near post",wrong:["Far post","Stay outside the box","Back to halfway"],fb:"Near post, ready to finish."}
+    ]}
+  },
+  f242:{
+    gk:{badge:"GK",label:"Goalkeeper",questions:[
+      {q:"We're building from the back. Who do you pass to?",correct:"A centre back who has split wide",wrong:["Straight up to the 9","Kicked long","Nobody, you dribble"],fb:"Their press then has to run across."},
+      {q:"We're pushed high up the pitch. What's your job?",correct:"Sweep up behind the back line",wrong:["Stay on your line","Go up front","Sit in the six-yard box"],fb:"You start attacks and sweep up behind."}
+    ]},
+    cb:{badge:"CB",label:"Centre Backs",questions:[
+      {q:"Our keeper has the ball. What do you do?",correct:"Split wide",wrong:["Stand next to the other centre back","Run up front","Stand behind the goal"],fb:"Split wide to build from the back."},
+      {q:"A wing back goes forward. What's your job?",correct:"Cover the space behind her",wrong:["Go with her","Stand still","Run up front"],fb:"Cover behind the wing backs."}
+    ]},
+    wb:{badge:"WB",label:"Wing Backs",questions:[
+      {q:"We have the ball. Where should you be?",correct:"High and wide",wrong:["Next to the centre backs","In the middle","Behind the keeper"],fb:"You own the whole side."},
+      {q:"We lose the ball. What do you do?",correct:"Get back into the line",wrong:["Stay high","Walk back","Swap wings"],fb:"Back in the line without the ball."},
+      {q:"In our press, they play it wide to your side. You…",correct:"Jump to the player on the ball",wrong:["Wait for her to come to you","Run back to our goal","Leave it to the 9"],fb:"Jump to her and trap her on the touchline."}
+    ]},
+    cm:{badge:"CM",label:"Centre Midfielders",questions:[
+      {q:"We're building from the back. Where should you show?",correct:"In the gap behind their first line",wrong:["Right next to the centre back","Up front","On the touchline"],fb:"Show in the gaps, then turn and play forward."},
+      {q:"What's your main job in the 2-4-2?",correct:"Link defence to attack",wrong:["Only defend","Only score","Take every throw-in"],fb:"Show for the ball in the gaps and link us together."},
+      {q:"We've just won the ball in our press. What do you do?",correct:"Take it and play quickly forward",wrong:["Pass back to the keeper","Hold it and wait","Kick it out"],fb:"They're still facing the wrong way, so go quickly."}
+    ]},
+    ten:{badge:"10",label:"The 10",questions:[
+      {q:"Where do you play when we have the ball?",correct:"Between their midfield and defence",wrong:["Next to our centre backs","On the touchline","Behind the 9"],fb:"Play between their lines and feed the 9."},
+      {q:"In our press, the 9 closes down their centre back. What do you do?",correct:"Cover the pass back",wrong:["Press the same player","Drop into defence","Stand still"],fb:"Two of you, two jobs."},
+      {q:"A cross is coming in. Where do you go?",correct:"Far post",wrong:["Near post","Stay outside the box","Back to halfway"],fb:"9 near post, 10 far post."}
+    ]},
+    nine:{badge:"9",label:"The 9",questions:[
+      {q:"Their keeper passes to a centre back. What do you do?",correct:"Close her down",wrong:["Stay where you are","Run to the keeper","Drop into midfield"],fb:"You lead the press."},
+      {q:"We win the ball and the 10 has it. What do you do?",correct:"Run in behind",wrong:["Come short for it","Stand still","Drop back to defend"],fb:"You're the first runner in behind."},
+      {q:"A cross is coming in. Where do you go?",correct:"Near post",wrong:["Far post","Stay outside the box","Back to halfway"],fb:"Near post, ready to finish."}
+    ]}
+  }
+};
+
+/* ---------- QUIZ ENGINE ---------- */
+var TOTAL = 10, MAX_ROLE = 4;
+function $(id){ return document.getElementById(id); }
+function shuffle(arr){
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+  return a;
+}
+var state = { form:null, role:null, questions:[], index:0, score:0, wrong:[] };
+
+function renderPicks(){
+  var k = Hawks.form();
+  state.form = k;
+  $("formLbl").textContent = Hawks.FORMS[k].label;
+  var wrap = $("rolePicks"); wrap.innerHTML = "";
+  Object.keys(ROLES[k]).forEach(function(key, i){
+    var r = ROLES[k][key];
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "role-pick-btn";
+    b.innerHTML = '<span class="pos-badge' + (i ? ' dark' : '') + '"></span><span><b></b></span>';
+    b.querySelector(".pos-badge").textContent = r.badge;
+    b.querySelector("b").textContent = r.label;
+    b.addEventListener("click", function(){ startQuiz(key); });
+    wrap.appendChild(b);
+  });
+}
+
+function buildQuestionSet(roleKey){
+  var role = ROLES[state.form][roleKey];
+  var mine = shuffle(role.questions).slice(0, MAX_ROLE);
+  var rest = shuffle(TEAM[state.form].concat(GENERAL)).slice(0, TOTAL - mine.length);
+  return shuffle(mine.concat(rest)).map(function(q){
+    var opts = shuffle([q.correct].concat(q.wrong));
+    return { text:q.q, options:opts, correctIndex:opts.indexOf(q.correct), feedback:q.fb };
+  });
+}
+
+function showScreen(name){
+  $("screen-roles").classList.toggle("hidden", name !== "roles");
+  $("screen-quiz").classList.toggle("hidden", name !== "quiz");
+  $("screen-score").classList.toggle("hidden", name !== "score");
+  $("quiz-app").scrollIntoView({block:"start"});
+}
+
+function startQuiz(roleKey){
+  state.role = roleKey;
+  state.questions = buildQuestionSet(roleKey);
+  state.index = 0; state.score = 0; state.wrong = [];
+  $("quiz-role-tag").textContent = Hawks.FORMS[state.form].label + " · " + ROLES[state.form][roleKey].label;
+  showScreen("quiz");
+  renderQuestion();
+}
+
+function renderQuestion(){
+  var q = state.questions[state.index];
+  $("quiz-role-heading").textContent = ROLES[state.form][state.role].label + " quiz";
+  $("quiz-progress").textContent = "Question " + (state.index + 1) + " of " + state.questions.length;
+  $("quiz-question").textContent = q.text;
+  var optWrap = $("quiz-options"); optWrap.innerHTML = "";
+  q.options.forEach(function(opt, i){
+    var btn = document.createElement("button");
+    btn.type = "button"; btn.className = "quiz-option"; btn.textContent = opt;
+    btn.addEventListener("click", function(){ selectAnswer(i); });
+    optWrap.appendChild(btn);
+  });
+  var fb = $("quiz-feedback");
+  fb.classList.add("hidden"); fb.classList.remove("wrong"); fb.textContent = "";
+  $("quiz-next").classList.add("hidden");
+}
+
+function selectAnswer(i){
+  var q = state.questions[state.index];
+  document.querySelectorAll("#quiz-options .quiz-option").forEach(function(b, idx){
+    b.disabled = true;
+    if (idx === q.correctIndex) { b.classList.add("correct"); }
+    if (idx === i && i !== q.correctIndex) { b.classList.add("incorrect"); }
+  });
+  var fb = $("quiz-feedback");
+  fb.textContent = (i === q.correctIndex ? "Correct. " : "Not quite. ") + q.feedback;
+  fb.classList.remove("hidden");
+  if (i === q.correctIndex) { state.score++; fb.classList.remove("wrong"); }
+  else { fb.classList.add("wrong"); state.wrong.push({ text:q.text, correct:q.options[q.correctIndex], feedback:q.feedback }); }
+  var nextBtn = $("quiz-next");
+  nextBtn.textContent = (state.index === state.questions.length - 1) ? "See score" : "Next";
+  nextBtn.classList.remove("hidden");
+  nextBtn.focus();
+}
+
+function showScore(){
+  showScreen("score");
+  $("quiz-score-num").textContent = state.score + "/" + state.questions.length;
+  $("quiz-score-msg").textContent = state.score >= 8 ? "Brilliant. You know your job." : state.score >= 5 ? "Good effort. Go again and sharpen it up." : "Give it another go and check the ones you missed below.";
+  var review = $("quiz-review"); review.innerHTML = "";
+  if (!state.wrong.length) {
+    var p = document.createElement("p"); p.className = "sec-note"; p.style.margin = "0"; p.textContent = "No misses. Nice work."; review.appendChild(p);
+  }
+  state.wrong.forEach(function(w){
+    var div = document.createElement("div"); div.className = "quiz-review-item";
+    [["rq", w.text], ["ra", "Answer: " + w.correct], ["rf", w.feedback]].forEach(function(x){
+      var d = document.createElement("div"); d.className = x[0]; d.textContent = x[1]; div.appendChild(d);
+    });
+    review.appendChild(div);
+  });
+}
+
+$("quiz-next").addEventListener("click", function(){
+  state.index++;
+  if (state.index >= state.questions.length) { showScore(); } else { renderQuestion(); }
+});
+$("btn-try-again").addEventListener("click", function(){ startQuiz(state.role); });
+$("btn-pick-another").addEventListener("click", function(){ showScreen("roles"); });
+document.addEventListener("hawks:form", function(){ renderPicks(); showScreen("roles"); });
+renderPicks();
+})();
+</script>
+<script src="assets/messages.js"></script>
+<script>Hawks.footer();</script>
+</body>
+</html>

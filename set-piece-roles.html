@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hawks — Set-Piece Roles</title>
+<link rel="icon" href="assets/crest.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<script src="assets/site.js" data-page="set-piece-roles" data-eyebrow="Set pieces" data-h1="Set-Piece Roles" data-l2="Every Position, Every Restart" data-sub="Each position's job at every dead ball: our goal kicks, their goal kicks, corners and throw-ins. The detail for each restart is on its own tab."></script>
+
+<section>
+  <div class="wrap">
+    <p class="tag">Quick reference</p>
+    <h2>Your job at every restart</h2>
+    <p class="sec-note">Find your position. All five restarts on one card. The detail for each is on its own page.</p>
+    <div class="todo">
+      <p class="tl">To agree at the coaches' meeting · agenda items 4–9</p>
+      <p>These cards fill in automatically once we've agreed goal kicks, corners and throw-ins for the <span id="fl"></span>.</p>
+    </div>
+    <div class="pos-grid" id="grid"></div>
+  </div>
+</section>
+
+<script>
+(function(){
+  /* Positions in each formation, and each position's job at every restart.
+     Fill in JOBS after the meeting, e.g. JOBS.f341.GK.ourGK = "Scan before you receive..." */
+  var RESTARTS = [
+    ["ourGK", "Our goal kicks", "goal-kicks.html#ours"],
+    ["theirGK", "Their goal kicks", "goal-kicks.html#theirs"],
+    ["attCorner", "Attacking corners", "corners.html#attack"],
+    ["defCorner", "Defending corners", "corners.html#defend"],
+    ["throw", "Our throw-ins", "throw-ins.html"]
+  ];
+  var POS = {
+    f341: [["GK","Goalkeeper","Our spare player"],["CB","Centre Backs","LCB, CB & RCB"],["W","Wingers","LW & RW"],["CM","Centre Midfielders","LCM & RCM"],["ST","Striker","Up front on her own"]],
+    f242: [["GK","Goalkeeper","Our spare player"],["CB","Centre Backs","LCB & RCB"],["WB","Wing Backs","LWB & RWB"],["CM","Centre Midfielders","LCM & RCM"],["10","The 10","Between their lines"],["9","The 9","Leads the line"]]
+  };
+  var JOBS = { f341: {}, f242: {} };
+
+  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
+  function render(){
+    var k = Hawks.form();
+    document.getElementById("fl").textContent = Hawks.FORMS[k].label;
+    document.getElementById("grid").innerHTML = POS[k].map(function(p, i){
+      var jobs = JOBS[k][p[0]] || {};
+      return '<div class="pos"><div class="pos-hd"><span class="pos-badge' + (i ? ' dark' : '') + '">' + esc(p[0]) + '</span><span><b>' + esc(p[1]) + '</b><small>' + esc(p[2]) + '</small></span></div><dl class="sp">' +
+        RESTARTS.map(function(r){
+          var j = jobs[r[0]];
+          return '<dt><a href="' + r[2] + '">' + esc(r[1]) + '</a></dt>' + (j ? '<dd>' + esc(j) + '</dd>' : '<dd class="tbc">To be agreed.</dd>');
+        }).join("") + '</dl></div>';
+    }).join("");
+  }
+  render();
+  document.addEventListener("hawks:form", render);
+})();
+</script>
+<script src="assets/messages.js"></script>
+<script>Hawks.footer();</script>
+</body>
+</html>
