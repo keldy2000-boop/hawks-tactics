@@ -63,13 +63,49 @@ svg#pitch{display:block;width:100%;height:auto;border-radius:10px}
 .tb{stroke:#e8b33a;stroke-width:.85;stroke-dasharray:1.6 1.2;fill:none}
 .lbl{font-family:Arial,sans-serif;font-weight:800;font-size:2.7px;fill:#fff;text-anchor:middle}
 .lbl.k{fill:#5a1a22}
+.lbl.o{fill:#e6e6ea;font-size:2.4px}
+#pitch [data-drag],#free [data-k]{cursor:grab}
+#pitch [data-drag]:active,#free [data-k]:active{cursor:grabbing}
+.spd{gap:10px;align-items:center}
+
+/* mode switch + free board toolbar */
+.seg{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.seg button{border:2px solid var(--line);background:var(--panel);border-radius:999px;padding:6px 13px;min-height:40px;
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.07em;font-size:.92rem}
+.seg button[aria-pressed="true"]{background:var(--sky);border-color:var(--sky);color:#3B0F16}
+.seg .sl{font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+  font-size:.8rem;color:var(--mute);min-width:42px}
+.modes{margin:0 0 18px}
+.modes button{min-height:46px;padding:8px 18px;font-size:1rem}
+.ftools{display:grid;gap:8px;margin:0 0 12px}
+.seg button.fs{background:var(--maroon);border-color:var(--maroon);color:#fff}
+.fpitch{max-width:460px}
+svg#free{display:block;width:100%;height:auto;border-radius:10px;touch-action:none;user-select:none;-webkit-user-select:none}
+.fb.draw svg#free{cursor:crosshair}
+.fr{fill:none;stroke:#fff;stroke-width:.6;stroke-dasharray:1.6 1.2;stroke-linecap:round}
+.fp{fill:none;stroke:#e8b33a;stroke-width:.8;stroke-linecap:round}
+/* full screen: the free board fills the screen (real full screen where the phone allows it) */
+html.noscroll,html.noscroll body{overflow:hidden}
+.fb.full{position:fixed;inset:0;z-index:100;background:var(--ink);display:flex;flex-direction:column;gap:8px;
+  padding:max(8px,env(safe-area-inset-top)) max(8px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-left))}
+.fb.full .ftools{display:flex;flex-wrap:wrap;gap:6px 14px;margin:0}
+.fb.full .seg button{min-height:36px;padding:4px 11px;font-size:.85rem}
+.fb.full .fpitch{flex:1 1 auto;min-height:0;max-width:none}
+.fb.full svg#free{width:100%;height:100%}
+.fb.full .legend{display:none}
 </style>
 </head>
 <body>
-<script src="assets/site.js" data-page="board" data-eyebrow="Tactics board" data-h1="Tactics Board" data-l2="Watch It Move" data-sub="Pick a moment and press play. Change formation on the Game Day page."></script>
+<script src="assets/site.js" data-page="board" data-eyebrow="Tactics board" data-h1="Tactics Board" data-l2="Watch It Move" data-sub="Pick a moment and press play, or set up your own on the free board. Switch formation at the right of the tab bar."></script>
 
 <section>
   <div class="wrap">
+    <div class="seg modes" role="group" aria-label="Board">
+      <button type="button" data-mode="watch" aria-pressed="true">Watch it move</button>
+      <button type="button" data-mode="free" aria-pressed="false">Free board</button>
+    </div>
+
+    <div id="watchMode">
     <div class="scenes" id="tabs" role="group" aria-label="Moment"></div>
     <p class="aim" id="aim"></p>
 
@@ -99,7 +135,7 @@ svg#pitch{display:block;width:100%;height:auto;border-radius:10px}
           <circle id="ball" r="1.7" fill="#fff" stroke="#18211c" stroke-width=".4"/>
         </svg>
         <div class="legend">
-          <span><i class="us"></i>Hawks</span><span><i class="gk"></i>Keeper</span><span><i class="them"></i>Other team</span><span>We attack up the pitch</span>
+          <span><i class="us"></i>Hawks</span><span><i class="gk"></i>Keeper</span><span><i class="them"></i>Other team (3-4-1)</span><span>We attack up the pitch</span>
         </div>
       </div>
 
@@ -114,9 +150,49 @@ svg#pitch{display:block;width:100%;height:auto;border-radius:10px}
           <button id="bPlay" class="go" type="button">Play</button>
           <button id="bNext" type="button">Next</button>
         </div>
-        <div class="spd"><button id="bSpd" type="button">Speed: normal</button></div>
+        <div class="spd"><button id="bReset" type="button" hidden>Reset this step</button><button id="bSpd" type="button">Speed: normal</button></div>
         <div class="broles" id="roles"></div>
-        <p class="fine">Dashed white lines show where players run. The gold line shows the ball. Arrow keys step through; space plays and pauses.</p>
+        <p class="fine">Dashed white lines show where players run. The gold line shows the ball. Drag any counter or the ball to try your own idea. Arrow keys step through; space plays and pauses.</p>
+      </div>
+    </div>
+    </div>
+
+    <div id="freeMode" hidden>
+      <p class="aim">Drag the counters and the ball to set up any moment. Pick a pen to draw runs and passes. Your board is saved on this device.</p>
+      <div class="fb" id="fb">
+        <div class="ftools">
+          <div class="seg" role="group" aria-label="Our formation"><span class="sl">Us</span><button type="button" data-us="f341">3-4-1</button><button type="button" data-us="f242">2-4-2</button></div>
+          <div class="seg" role="group" aria-label="Their formation"><span class="sl">Them</span><button type="button" data-them="f341">3-4-1</button><button type="button" data-them="f242">2-4-2</button><button type="button" data-them="off">Hide</button></div>
+          <div class="seg" role="group" aria-label="Tool"><span class="sl">Tool</span><button type="button" data-tool="move">Move</button><button type="button" data-tool="run">Draw run</button><button type="button" data-tool="pass">Draw pass</button></div>
+          <div class="seg"><button type="button" id="fUndo">Undo line</button><button type="button" id="fClear">Clear lines</button><button type="button" id="fReset">Reset</button><button type="button" id="fFull" class="fs">Full screen</button></div>
+        </div>
+        <div class="fpitch">
+          <svg id="free" viewBox="-3 -4 74 108" role="img" aria-label="Free tactics board">
+            <defs>
+              <marker id="fw" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="4.2" markerHeight="4.2" orient="auto"><path d="M0,0.5 L6,3 L0,5.5 z" fill="#fff"/></marker>
+              <marker id="fg" viewBox="0 0 6 6" refX="5" refY="3" markerWidth="3.6" markerHeight="3.6" orient="auto"><path d="M0,0.5 L6,3 L0,5.5 z" fill="#e8b33a"/></marker>
+            </defs>
+            <rect x="-3" y="-4" width="74" height="108" fill="#24603f"/>
+            <rect x="0" y="0" width="68" height="100" fill="#2f7a4f"/>
+            <g fill="#000" opacity=".07"><rect x="0" y="10" width="68" height="10"/><rect x="0" y="30" width="68" height="10"/><rect x="0" y="50" width="68" height="10"/><rect x="0" y="70" width="68" height="10"/><rect x="0" y="90" width="68" height="10"/></g>
+            <g class="ln">
+              <rect x="0" y="0" width="68" height="100"/>
+              <line x1="0" y1="50" x2="68" y2="50"/>
+              <circle cx="34" cy="50" r="7"/>
+              <rect x="17" y="0" width="34" height="14"/><rect x="26" y="0" width="16" height="5"/>
+              <rect x="17" y="86" width="34" height="14"/><rect x="26" y="95" width="16" height="5"/>
+              <rect x="29" y="-2.2" width="10" height="2.2"/><rect x="29" y="100" width="10" height="2.2"/>
+            </g>
+            <g fill="#f2f5ec"><circle cx="34" cy="50" r=".6"/><circle cx="34" cy="10" r=".5"/><circle cx="34" cy="90" r=".5"/></g>
+            <g id="fLines"></g>
+            <g id="fOpp"></g>
+            <g id="fUs"></g>
+            <circle id="fBall" data-k="b" r="1.7" fill="#fff" stroke="#18211c" stroke-width=".4"/>
+          </svg>
+        </div>
+        <div class="legend">
+          <span><i class="us"></i>Hawks</span><span><i class="gk"></i>Keeper</span><span><i class="them"></i>Other team</span><span>We attack up the pitch</span>
+        </div>
       </div>
     </div>
   </div>
@@ -131,12 +207,15 @@ function el(n,a,p){var e=document.createElementNS(NS,n);for(var k in a){e.setAtt
 function om(o,m){return o.map(function(a,i){return m[i]?m[i].slice():a.slice();});}
 function cp(o){return o.map(function(a){return a.slice();});}
 
-/* opposition shapes: order is keeper, 2 centre backs, 2 wide, 2 midfield, 2 forwards. They attack down the page. */
-var OPP_PRESS=[[34,16],[22,30],[46,30],[10,46],[58,46],[27,48],[41,48],[28,66],[40,66]];
-var OPP_BUILD=[[34,8],[24,22],[44,22],[8,38],[60,38],[26,44],[42,44],[26,64],[44,64]];
-var OPP_ATT=[[34,24],[24,34],[44,34],[8,52],[60,50],[20,46],[48,44],[26,60],[42,58]];
-var OPP_DEF=[[34,6],[16,22],[34,18],[52,22],[20,34],[34,38],[48,34],[22,50],[46,50]];
-var OPP_BOX=[[34,6],[22,14],[34,13],[50,15],[24,28],[42,28],[52,30],[26,42],[40,42]];
+/* opposition shapes, all 3-4-1. They attack down the page.
+   Order: 0 keeper, 1-3 centre backs (left, middle, right as we look up the pitch), 4-5 wingers (left, right),
+   6-7 centre mids (left, right), 8 striker. "o4" in a step means the ball is with their left winger, and so on. */
+var OPP_NAMES=["GK","CB","CB","CB","W","W","CM","CM","ST"];
+var OPP_PRESS=[[34,11],[20,21],[34,20],[48,21],[12,42],[56,42],[24,46],[34,62],[34,71]];
+var OPP_BUILD=[[34,8],[20,22],[34,17],[48,22],[6,36],[62,36],[24,42],[40,40],[42,68]];
+var OPP_ATT=[[34,22],[20,34],[34,36],[48,34],[8,54],[60,52],[20,46],[48,44],[34,62]];
+var OPP_DEF=[[34,6],[16,22],[34,18],[52,22],[10,36],[58,36],[28,34],[42,36],[30,52]];
+var OPP_BOX=[[34,5],[22,14],[34,12],[50,14],[15,28],[52,32],[26,30],[42,30],[34,42]];
 
 /* scene "key" is used for links from other pages, e.g. board.html#press */
 var FORMS={
@@ -162,29 +241,29 @@ var FORMS={
    {key:"build-up",name:"Build-up",aim:"Getting out from the keeper when the other team presses us.",steps:[
     {c:"Keeper has the ball. Two of their players are coming to press.",o:OPP_PRESS,b:"GK",p:{}},
     {c:"Centre backs split wide. Wing backs stay high and wide. Midfielders show in the gaps.",p:{LCB:[14,80],RCB:[54,80],LWB:[6,60],RWB:[62,60],LCM:[25,66],RCM:[43,66],TEN:[26,38],NINE:[42,36]}},
-    {c:"Keeper passes to a centre back. Their press has to run across.",b:"LCB",o:function(o){return om(o,{7:[20,72],8:[32,71],5:[24,50],6:[37,50]});}},
-    {c:"Next pass goes into the midfielder in the gap, behind their first line.",b:"LCM",p:{LCM:[24,62]},o:function(o){return om(o,{7:[16,78],8:[30,76],5:[20,56],6:[36,54]});}},
-    {c:"Turn and play forward to the wing back. We have beaten the press.",b:"LWB",p:{LWB:[6,50],TEN:[22,40],NINE:[38,28]},o:function(o){return om(o,{5:[20,62],6:[34,58],3:[12,56],4:[56,50]});}}
+    {c:"Keeper passes to a centre back. Their press has to run across.",b:"LCB",o:function(o){return om(o,{8:[20,72],7:[32,70],6:[24,52]});}},
+    {c:"Next pass goes into the midfielder in the gap, behind their first line.",b:"LCM",p:{LCM:[24,62]},o:function(o){return om(o,{8:[18,73],7:[30,74],6:[20,56]});}},
+    {c:"Turn and play forward to the wing back. We have beaten the press.",b:"LWB",p:{LWB:[6,50],TEN:[22,40],NINE:[38,28]},o:function(o){return om(o,{6:[19,57],7:[34,64],4:[12,56],5:[56,50]});}}
    ]},
    {key:"press",name:"Press",aim:"Winning the ball back high up the pitch.",steps:[
-    {c:"Their keeper has the ball. We squeeze up. The 9 and 10 stay close to their two centre backs.",o:OPP_BUILD,b:"o0",p:{GK:[34,70],LCB:[29,58],RCB:[39,58],LWB:[10,46],RWB:[58,46],LCM:[25,52],RCM:[43,52],TEN:[28,34],NINE:[40,32]}},
-    {c:"Trigger: the pass goes to their centre back. The 9 closes her down, the 10 covers the pass back.",b:"o1",p:{NINE:[29,25],TEN:[38,27],LWB:[10,42],RWB:[58,42]}},
-    {c:"She plays it wide. The wing back jumps to her, midfield slides across and traps her on the touchline.",b:"o3",p:{LWB:[13,38],LCM:[18,46],RCM:[34,46],NINE:[25,25],TEN:[34,34],LCB:[24,56],RCB:[36,56],RWB:[50,44],GK:[30,66]}},
-    {c:"Ball won. Our midfielder takes it while they are still facing the wrong way.",b:"LCM",p:{LCM:[18,44]},o:function(o){return om(o,{3:[6,40],5:[28,38]});}},
-    {c:"Quick pass to the 10. The 9 runs in behind.",b:"TEN",p:{TEN:[26,32],NINE:[32,16]},o:function(o){return om(o,{1:[22,24],2:[44,20]});}}
+    {c:"Their keeper has the ball. We squeeze up. The 9 and 10 stay close to their back three.",o:OPP_BUILD,b:"o0",p:{GK:[34,70],LCB:[29,58],RCB:[39,58],LWB:[10,46],RWB:[58,46],LCM:[25,52],RCM:[43,52],TEN:[28,32],NINE:[40,30]}},
+    {c:"Trigger: the pass goes to their left centre back. The 9 closes her down, the 10 covers the pass back to the middle.",b:"o1",p:{NINE:[27,27],TEN:[36,27],LWB:[10,42],RWB:[58,42]}},
+    {c:"She plays it wide to their winger. The wing back jumps to her, midfield slides across and traps her on the touchline.",b:"o4",p:{LWB:[13,38],LCM:[18,47],RCM:[34,48],NINE:[25,27],TEN:[33,33],LCB:[24,56],RCB:[36,56],RWB:[50,44],GK:[30,66]}},
+    {c:"Ball won. Our midfielder takes it while they are still facing the wrong way.",b:"LCM",p:{LCM:[18,45]},o:function(o){return om(o,{4:[6,40],6:[28,39]});}},
+    {c:"Quick pass to the 10. The 9 runs in behind.",b:"TEN",p:{TEN:[26,32],NINE:[30,14]},o:function(o){return om(o,{1:[20,25],2:[39,21],3:[48,20]});}}
    ]},
    {key:"defend",name:"Defend",aim:"Staying compact when they have the ball in our half.",steps:[
-    {c:"Two banks. The 10 and 9 screen in front, four across the middle, two centre backs behind.",o:OPP_ATT,b:"o7",p:{GK:[34,93],LCB:[26,80],RCB:[42,80],LWB:[10,68],LCM:[26,68],RCM:[42,68],RWB:[58,68],TEN:[28,52],NINE:[40,50]}},
-    {c:"Ball switches wide. The whole team slides across together.",b:"o4",p:{GK:[38,93],LCB:[34,80],RCB:[50,80],LWB:[20,68],LCM:[36,68],RCM:[50,68],RWB:[62,68],TEN:[36,52],NINE:[48,50]},o:function(o){return om(o,{7:[32,62],8:[46,60],6:[52,46]});}},
-    {c:"Wing back closes the ball. Centre back covers behind her. Far side tucks in.",p:{RWB:[55,68],RCB:[50,78],LCB:[36,79],RCM:[46,70],LCM:[30,70],LWB:[16,68]},o:function(o){return om(o,{4:[60,64]});}},
-    {c:"She blocks it. We win the ball and play to the midfielder.",b:"RCM",o:function(o){return om(o,{4:[58,70],8:[44,66]});}}
+    {c:"Two banks. The 10 and 9 screen in front, four across the middle, two centre backs behind.",o:OPP_ATT,b:"o8",p:{GK:[34,93],LCB:[26,80],RCB:[42,80],LWB:[10,68],LCM:[26,68],RCM:[42,68],RWB:[58,68],TEN:[28,52],NINE:[40,50]}},
+    {c:"Ball switches wide to their right winger. The whole team slides across together.",b:"o5",p:{GK:[38,93],LCB:[34,80],RCB:[50,80],LWB:[20,68],LCM:[36,68],RCM:[50,68],RWB:[62,68],TEN:[36,52],NINE:[48,50]},o:function(o){return om(o,{8:[44,62],6:[28,58],7:[55,43]});}},
+    {c:"Wing back closes the ball. Centre back covers behind her. Far side tucks in.",p:{RWB:[55,68],RCB:[50,78],LCB:[36,79],RCM:[46,70],LCM:[30,70],LWB:[16,68]},o:function(o){return om(o,{5:[60,64]});}},
+    {c:"She blocks it. We win the ball and play to the midfielder.",b:"RCM",o:function(o){return om(o,{5:[60,74],8:[42,63]});}}
    ]},
    {key:"attack",name:"Attack",aim:"Getting the ball wide and into the box.",steps:[
     {c:"Midfielder has the ball. Wing backs are wide. The 10 and 9 sit between their lines.",o:OPP_DEF,b:"LCM",p:{GK:[34,88],LCB:[24,70],RCB:[44,70],LWB:[8,52],RWB:[60,52],LCM:[25,58],RCM:[43,58],TEN:[26,42],NINE:[42,28]}},
-    {c:"Pass into the 10’s feet. The 9 stays on their centre back.",b:"TEN",p:{TEN:[28,40],LCM:[27,52]},o:function(o){return om(o,{5:[38,40]});}},
-    {c:"10 plays it wide to the wing back, who runs forward on the outside.",b:"LWB",p:{LWB:[8,36],TEN:[30,36],LCM:[27,46]},o:function(o){return om(o,{4:[18,36],1:[16,24],5:[38,42]});}},
+    {c:"Pass into the 10’s feet. The 9 stays on their middle centre back.",b:"TEN",p:{TEN:[28,40],LCM:[27,52]},o:function(o){return om(o,{6:[35,38],8:[32,59]});}},
+    {c:"10 plays it wide to the wing back, who runs forward on the outside.",b:"LWB",p:{LWB:[8,36],TEN:[30,36],LCM:[27,46]},o:function(o){return om(o,{4:[16,37],1:[16,25],6:[38,38],7:[46,34]});}},
     {c:"Cross comes in. The 9 goes near post, the 10 far post, the wing back arrives at the back, a midfielder waits on the edge.",b:"NINE",o:OPP_BOX,p:{LWB:[8,24],NINE:[29,18],TEN:[44,20],RWB:[58,26],LCM:[34,30],RCM:[44,40],LCB:[24,56],RCB:[44,56],GK:[34,80]}},
-    {c:"The 9 finishes. Everyone else is ready for the rebound.",b:[34,3],p:{NINE:[31,12]}}
+    {c:"The 9 finishes. Everyone else is ready for the rebound.",b:[34,3],p:{NINE:[31,12]},o:function(o){return om(o,{2:[38,15]});}}
    ]}
   ]
  },
@@ -209,30 +288,30 @@ var FORMS={
    {key:"build-up",name:"Build-up",aim:"Getting out from the keeper when the other team presses us.",steps:[
     {c:"Keeper has the ball. Two of their players are coming to press.",o:OPP_PRESS,b:"GK",p:{}},
     {c:"Back three spread across. Wingers stay wide and high to stretch them. Midfielders show in the gaps.",p:{LCB:[12,80],CB:[34,84],RCB:[56,80],LW:[6,50],RW:[62,50],LCM:[24,64],RCM:[44,64],ST:[34,34]}},
-    {c:"Short pass to the middle centre back. The keeper has become an extra player.",b:"CB",o:function(o){return om(o,{7:[30,72],8:[40,70]});}},
-    {c:"Switch to the wide centre back. Their press has to travel.",b:"LCB",o:function(o){return om(o,{7:[18,74],8:[30,72],5:[24,50],6:[36,50]});}},
-    {c:"Pass into the midfielder in the gap, behind their first line.",b:"LCM",p:{LCM:[22,62]},o:function(o){return om(o,{7:[14,78],8:[28,76],5:[18,58],6:[34,54]});}},
-    {c:"Turn and play to the winger running forward. We have beaten the press.",b:"LW",p:{LW:[6,44],ST:[34,30]},o:function(o){return om(o,{5:[18,62],3:[12,54]});}}
+    {c:"Short pass to the middle centre back. The keeper has become an extra player.",b:"CB",o:function(o){return om(o,{8:[30,72],7:[40,70]});}},
+    {c:"Switch to the wide centre back. Their press has to travel.",b:"LCB",o:function(o){return om(o,{8:[18,74],7:[30,72],6:[24,52]});}},
+    {c:"Pass into the midfielder in the gap, behind their first line.",b:"LCM",p:{LCM:[22,62]},o:function(o){return om(o,{8:[16,73],7:[28,74],6:[18,55]});}},
+    {c:"Turn and play to the winger running forward. We have beaten the press.",b:"LW",p:{LW:[6,44],ST:[34,30]},o:function(o){return om(o,{6:[16,60],4:[12,54]});}}
    ]},
    {key:"press",name:"Press",aim:"Winning the ball back high up the pitch.",steps:[
-    {c:"Their keeper has the ball. We squeeze up. The striker waits between their two centre backs.",o:OPP_BUILD,b:"o0",p:{GK:[34,76],LCB:[20,60],CB:[34,62],RCB:[48,60],LW:[8,46],LCM:[24,52],RCM:[44,52],RW:[60,46],ST:[34,28]}},
-    {c:"Trigger: the pass goes to their centre back. The striker closes her down and shows her the touchline. Wingers squeeze.",b:"o1",p:{ST:[29,26],LW:[10,42],RW:[52,36]}},
-    {c:"She plays it wide. The left winger jumps to her, midfield slides across and the back three step up.",b:"o3",p:{LW:[13,38],LCM:[19,47],ST:[30,28],LCB:[18,58],CB:[32,60],RCB:[46,58],RCM:[36,48],RW:[48,40]}},
-    {c:"Ball won. Our midfielder takes it while they are still facing the wrong way.",b:"LCM",p:{LCM:[19,46]},o:function(o){return om(o,{3:[6,40],5:[28,38]});}},
-    {c:"Quick pass to the striker. Wingers run beyond her.",b:"ST",p:{ST:[30,22],RW:[52,30],LW:[10,36]},o:function(o){return om(o,{1:[22,24],2:[44,20]});}}
+    {c:"Their keeper has the ball. We squeeze up. The striker waits in front of their back three.",o:OPP_BUILD,b:"o0",p:{GK:[34,76],LCB:[20,60],CB:[34,62],RCB:[48,60],LW:[8,46],LCM:[24,52],RCM:[44,52],RW:[60,46],ST:[34,28]}},
+    {c:"Trigger: the pass goes to their left centre back. The striker closes her down and shows her the touchline. Wingers squeeze.",b:"o1",p:{ST:[26,26],LW:[10,42],RW:[52,36]}},
+    {c:"She plays it wide to their winger. Our left winger jumps to her, midfield slides across and the back three step up.",b:"o4",p:{LW:[13,38],LCM:[19,47],ST:[30,28],LCB:[18,58],CB:[32,60],RCB:[46,58],RCM:[36,48],RW:[48,40]}},
+    {c:"Ball won. Our midfielder takes it while they are still facing the wrong way.",b:"LCM",p:{LCM:[19,46]},o:function(o){return om(o,{4:[6,40],6:[28,39]});}},
+    {c:"Quick pass to the striker. Wingers run beyond her.",b:"ST",p:{ST:[30,22],RW:[52,30],LW:[10,36]},o:function(o){return om(o,{1:[20,25],2:[39,21],3:[48,20],4:[4,44]});}}
    ]},
    {key:"defend",name:"Defend",aim:"Staying compact when they have the ball in our half.",steps:[
-    {c:"Back five. Wingers drop in as wing backs. Two midfielders in front, the striker screening.",o:OPP_ATT,b:"o7",p:{GK:[34,93],LW:[10,72],LCB:[24,80],CB:[34,82],RCB:[44,80],RW:[58,72],LCM:[26,68],RCM:[42,68],ST:[34,52]}},
-    {c:"Ball switches wide. The whole team slides across together.",b:"o4",p:{GK:[38,93],LW:[18,72],LCB:[30,80],CB:[40,82],RCB:[50,80],RW:[62,70],LCM:[34,68],RCM:[48,68],ST:[44,52]},o:function(o){return om(o,{7:[32,62],8:[46,60],6:[52,46]});}},
-    {c:"Right winger closes the ball. Centre backs cover behind her. Far side tucks in.",p:{RW:[55,68],RCB:[50,78],CB:[41,80],LCB:[31,79],RCM:[46,68],LCM:[34,68],LW:[22,72]},o:function(o){return om(o,{4:[60,64]});}},
-    {c:"She blocks it. We win the ball and play to the midfielder.",b:"RCM",o:function(o){return om(o,{4:[58,70],8:[44,66]});}}
+    {c:"Back five. Wingers drop in as wing backs. Two midfielders in front, the striker screening.",o:OPP_ATT,b:"o8",p:{GK:[34,93],LW:[10,72],LCB:[24,80],CB:[34,82],RCB:[44,80],RW:[58,72],LCM:[26,68],RCM:[42,68],ST:[34,52]}},
+    {c:"Ball switches wide to their right winger. The whole team slides across together.",b:"o5",p:{GK:[38,93],LW:[18,72],LCB:[30,80],CB:[40,82],RCB:[50,80],RW:[62,70],LCM:[34,68],RCM:[48,68],ST:[44,52]},o:function(o){return om(o,{8:[44,62],6:[28,58],7:[55,43]});}},
+    {c:"Right winger closes the ball. Centre backs cover behind her. Far side tucks in.",p:{RW:[55,68],RCB:[50,78],CB:[41,80],LCB:[31,79],RCM:[46,68],LCM:[34,68],LW:[22,72]},o:function(o){return om(o,{5:[60,64]});}},
+    {c:"She blocks it. We win the ball and play to the midfielder.",b:"RCM",o:function(o){return om(o,{5:[60,74],8:[42,63]});}}
    ]},
    {key:"attack",name:"Attack",aim:"Getting the ball wide and into the box.",steps:[
     {c:"Midfielder has the ball. Wingers are high and wide. The striker sits between their lines.",o:OPP_DEF,b:"LCM",p:{GK:[34,88],LCB:[18,72],CB:[34,74],RCB:[50,72],LW:[8,48],LCM:[26,58],RCM:[42,58],RW:[60,48],ST:[34,46]}},
-    {c:"Pass into the striker’s feet. She holds it up with her back to goal.",b:"ST",p:{LCM:[28,52],RCM:[40,52]}},
-    {c:"Lay it off, then the winger runs beyond. The ball goes into the space down the line.",b:"LW",p:{LW:[7,36],LCM:[28,44]},o:function(o){return om(o,{4:[18,36],1:[16,24],5:[38,42]});}},
+    {c:"Pass into the striker’s feet. She holds it up with her back to goal.",b:"ST",p:{LCM:[28,52],RCM:[40,52]},o:function(o){return om(o,{8:[32,59]});}},
+    {c:"Lay it off, then the winger runs beyond. The ball goes into the space down the line.",b:"LW",p:{LW:[7,36],LCM:[28,44]},o:function(o){return om(o,{4:[16,37],1:[16,25],6:[38,38],7:[46,34]});}},
     {c:"Cross comes in. Striker near post, right winger far post, a midfielder waits on the edge.",b:"ST",o:OPP_BOX,p:{LW:[8,24],ST:[29,18],RW:[48,22],LCM:[34,32],RCM:[44,40],LCB:[22,60],CB:[34,62],RCB:[46,60],GK:[34,80]}},
-    {c:"The striker finishes. Everyone else is ready for the rebound.",b:[34,3],p:{ST:[31,12]}}
+    {c:"The striker finishes. Everyone else is ready for the rebound.",b:[34,3],p:{ST:[31,12]},o:function(o){return om(o,{2:[38,15]});}}
    ]}
   ]
  }
@@ -290,24 +369,31 @@ function buildPlayers(){
   var f=FORMS[S.form];
   usG.innerHTML="";P={};
   f.ids.forEach(function(id){
-    var g=el("g",{},usG),gk=id==="GK";
+    var g=el("g",{"data-drag":"u:"+id},usG),gk=id==="GK";
     el("circle",{r:3.7,fill:gk?"#b3c8ea":"#8e2b33",stroke:"#fff","stroke-width":.55},g);
     var t=el("text",{y:.95,"class":"lbl"+(gk?" k":"")},g);t.textContent=f.names[id];
     P[id]=g;
   });
   if(!O.length){
     oppG.innerHTML="";
-    for(var i=0;i<9;i++){O.push(el("circle",{r:3.3,fill:"#3a3a42",stroke:"#a2a2ab","stroke-width":.5},oppG));}
+    for(var i=0;i<9;i++){
+      var og=el("g",{"data-drag":"o:"+i},oppG);
+      el("circle",{r:3.3,fill:"#3a3a42",stroke:"#a2a2ab","stroke-width":.5},og);
+      var ot=el("text",{y:.85,"class":"lbl o"},og);ot.textContent=OPP_NAMES[i];
+      O.push(og);
+    }
   }
 }
 
 function draw(f){
   var form=FORMS[S.form];
   form.ids.forEach(function(id){P[id].setAttribute("transform","translate("+f.pos[id][0].toFixed(2)+" "+f.pos[id][1].toFixed(2)+")");});
-  O.forEach(function(c,i){c.setAttribute("cx",f.opp[i][0].toFixed(2));c.setAttribute("cy",f.opp[i][1].toFixed(2));});
+  O.forEach(function(g,i){g.setAttribute("transform","translate("+f.opp[i][0].toFixed(2)+" "+f.opp[i][1].toFixed(2)+")");});
   oppG.style.opacity=f.showN;
+  oppG.style.pointerEvents=f.showN>.5?"":"none";
   ball.setAttribute("cx",f.ball[0].toFixed(2));ball.setAttribute("cy",f.ball[1].toFixed(2));
   ball.style.opacity=f.ballN;
+  ball.style.pointerEvents=f.ballN>.5?"":"none";
 }
 
 function shorten(a,b,r){var dx=b[0]-a[0],dy=b[1]-a[1],d=Math.hypot(dx,dy);if(d<=r){return b;}return [b[0]-dx/d*r,b[1]-dy/d*r];}
@@ -374,6 +460,7 @@ function ui(){
   $("#bBack").disabled=S.step===0;
   $("#bNext").disabled=S.step===frames.length-1;
   $("#bSpd").textContent="Speed: "+(S.slow?"slow":"normal");
+  $("#bReset").hidden=!S.edited;
 }
 
 function renderPickers(){
@@ -394,8 +481,46 @@ function loadScene(rebuild){
   var form=FORMS[S.form];
   if(rebuild){buildPlayers();}
   frames=resolve(form,form.scenes[S.scene]);
+  S.edited=false;
   cur=null;renderPickers();goTo(0,true);
 }
+
+/* ---------- drag counters on the animated board ---------- */
+function clamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function svgPt(svg,e){
+  var p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;
+  p=p.matrixTransform(svg.getScreenCTM().inverse());
+  return [clamp(p.x,-1.5,69.5),clamp(p.y,-2.5,102.5)];
+}
+/* drag keys: "u:LCB" one of ours, "o:3" one of theirs, "b" the ball */
+function slot(f,k){
+  if(k==="b"){return f.ball;}
+  if(k.charAt(0)==="o"){return f.opp[+k.slice(2)];}
+  return f.pos[k.slice(2)];
+}
+var pitch=$("#pitch"),pd=null;
+pitch.addEventListener("touchstart",function(e){if(e.target.closest("[data-drag]")){e.preventDefault();}},{passive:false});
+pitch.addEventListener("pointerdown",function(e){
+  var t=e.target.closest("[data-drag]");
+  if(!t){return;}
+  S.playing=false;goTo(S.step,true);
+  var k=t.getAttribute("data-drag"),s=slot(frames[S.step],k),p=svgPt(pitch,e);
+  pd={k:k,off:[s[0]-p[0],s[1]-p[1]],moved:false};
+  pitch.setPointerCapture(e.pointerId);e.preventDefault();
+});
+pitch.addEventListener("pointermove",function(e){
+  if(!pd){return;}
+  var p=svgPt(pitch,e),s=slot(frames[S.step],pd.k);
+  s[0]=clamp(p[0]+pd.off[0],-1.5,69.5);s[1]=clamp(p[1]+pd.off[1],-2.5,102.5);
+  pd.moved=true;cur=mix(frames[S.step],frames[S.step],0);draw(cur);
+});
+function dragEnd(){if(pd&&pd.moved){S.edited=true;ui();}pd=null;}
+pitch.addEventListener("pointerup",dragEnd);
+pitch.addEventListener("pointercancel",dragEnd);
+$("#bReset").addEventListener("click",function(){
+  var form=FORMS[S.form];
+  frames=resolve(form,form.scenes[S.scene]);S.edited=false;goTo(S.step,true);
+});
 
 document.addEventListener("hawks:form",function(e){
   if(S.form!==e.detail){S.form=e.detail;S.scene=Math.min(S.scene,FORMS[S.form].scenes.length-1);loadScene(true);}
@@ -410,13 +535,167 @@ $("#bBack").addEventListener("click",function(){if(S.step>0){goTo(S.step-1);}});
 $("#bSpd").addEventListener("click",function(){S.slow=!S.slow;ui();});
 document.addEventListener("keydown",function(e){
   if(/^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName)){return;}
+  if(e.key==="Escape"&&fbFull()){fbExit();return;}
+  if(mode!=="watch"){return;}
   if(e.key==="ArrowRight"&&S.step<frames.length-1){goTo(S.step+1);}
   else if(e.key==="ArrowLeft"&&S.step>0){goTo(S.step-1);}
   else if(e.key===" "&&e.target.tagName!=="BUTTON"){e.preventDefault();$("#bPlay").click();}
 });
 
+/* ---------- free board ---------- */
+var FB_KEY="hawksFreeBoard";
+var fsvg=$("#free"),fLines=$("#fLines"),fOpp=$("#fOpp"),fUs=$("#fUs"),fBall=$("#fBall"),fb=$("#fb");
+var tool="move",fd=null;
+
+/* kick-off: each shape squeezed into its own half. Theirs is ours mirrored, attacking down the page. */
+function kick(k){
+  var b=FORMS[k].base,o={};
+  for(var id in b){o[id]=[b[id][0],Math.round((54+(b[id][1]-27)*.591)*10)/10];}
+  return o;
+}
+function theirs(k){
+  var o=kick(k);
+  return FORMS[k].ids.map(function(id){return [68-o[id][0],Math.round((100-o[id][1])*10)/10];});
+}
+function fresh(){return {form:S.form,pos:kick(S.form),them:"f341",opp:theirs("f341"),show:true,ball:[34,50],lines:[]};}
+var F=(function(){
+  try{
+    var x=JSON.parse(localStorage.getItem(FB_KEY));
+    if(x&&FORMS[x.form]&&FORMS[x.them]&&x.pos&&x.opp&&x.ball&&x.lines){return x;}
+  }catch(e){}
+  return fresh();
+})();
+function fSave(){try{localStorage.setItem(FB_KEY,JSON.stringify(F));}catch(e){}}
+
+function counter(parent,k,p,r,fill,stroke,label,cls){
+  var g=el("g",{"data-k":k,transform:"translate("+p[0]+" "+p[1]+")"},parent);
+  el("circle",{r:r,fill:fill,stroke:stroke,"stroke-width":.55},g);
+  var t=el("text",{y:.95,"class":cls},g);t.textContent=label;
+  return g;
+}
+function fLine(l,parent){
+  var a=l.a,b=l.b,e=Math.hypot(b[0]-a[0],b[1]-a[1])>1.5?shorten(a,b,.6):b;
+  return el("line",{x1:a[0],y1:a[1],x2:e[0],y2:e[1],"class":l.t==="pass"?"fp":"fr","marker-end":"url(#"+(l.t==="pass"?"fg":"fw")+")"},parent);
+}
+function fRender(){
+  fLines.innerHTML="";F.lines.forEach(function(l){fLine(l,fLines);});
+  fOpp.innerHTML="";
+  if(F.show){
+    var th=FORMS[F.them];
+    th.ids.forEach(function(id,i){counter(fOpp,"o:"+i,F.opp[i],3.3,"#3a3a42","#a2a2ab",th.names[id],"lbl o");});
+  }
+  fUs.innerHTML="";
+  var us=FORMS[F.form];
+  us.ids.forEach(function(id){var gk=id==="GK";counter(fUs,"u:"+id,F.pos[id],3.7,gk?"#b3c8ea":"#8e2b33","#fff",us.names[id],"lbl"+(gk?" k":""));});
+  fBall.setAttribute("cx",F.ball[0]);fBall.setAttribute("cy",F.ball[1]);
+  [].forEach.call(document.querySelectorAll("[data-us]"),function(b){b.setAttribute("aria-pressed",b.getAttribute("data-us")===F.form?"true":"false");});
+  [].forEach.call(document.querySelectorAll("[data-them]"),function(b){var v=b.getAttribute("data-them");b.setAttribute("aria-pressed",(F.show?v===F.them:v==="off")?"true":"false");});
+  [].forEach.call(document.querySelectorAll("[data-tool]"),function(b){b.setAttribute("aria-pressed",b.getAttribute("data-tool")===tool?"true":"false");});
+  fb.classList.toggle("draw",tool!=="move");
+  $("#fUndo").disabled=$("#fClear").disabled=!F.lines.length;
+  fSave();
+}
+function fSlot(k){
+  if(k==="b"){return F.ball;}
+  if(k.charAt(0)==="o"){return F.opp[+k.slice(2)];}
+  return F.pos[k.slice(2)];
+}
+
+fsvg.addEventListener("pointerdown",function(e){
+  var p=svgPt(fsvg,e);
+  if(tool==="move"){
+    var t=e.target.closest("[data-k]");
+    if(!t){return;}
+    var k=t.getAttribute("data-k"),s=fSlot(k);
+    fd={k:k,node:t,off:[s[0]-p[0],s[1]-p[1]]};
+    t.parentNode.appendChild(t); /* bring to front */
+  }else{
+    var l={t:tool,a:p,b:p};
+    fd={line:l,node:fLine(l,fLines)};
+  }
+  fsvg.setPointerCapture(e.pointerId);e.preventDefault();
+});
+fsvg.addEventListener("pointermove",function(e){
+  if(!fd){return;}
+  var p=svgPt(fsvg,e);
+  if(fd.line){
+    fd.line.b=p;fd.node.remove();fd.node=fLine(fd.line,fLines);
+  }else{
+    var s=fSlot(fd.k);
+    s[0]=Math.round(clamp(p[0]+fd.off[0],-1.5,69.5)*10)/10;s[1]=Math.round(clamp(p[1]+fd.off[1],-2.5,102.5)*10)/10;
+    if(fd.k==="b"){fd.node.setAttribute("cx",s[0]);fd.node.setAttribute("cy",s[1]);}
+    else{fd.node.setAttribute("transform","translate("+s[0]+" "+s[1]+")");}
+  }
+});
+function fEnd(){
+  if(!fd){return;}
+  if(fd.line){
+    fd.node.remove();
+    var l=fd.line;
+    if(Math.hypot(l.b[0]-l.a[0],l.b[1]-l.a[1])>2.5){F.lines.push(l);}
+  }
+  fd=null;fRender();
+}
+fsvg.addEventListener("pointerup",fEnd);
+fsvg.addEventListener("pointercancel",fEnd);
+
+fb.addEventListener("click",function(e){
+  var b=e.target.closest("button");
+  if(!b){return;}
+  if(b.hasAttribute("data-us")){F.form=b.getAttribute("data-us");F.pos=kick(F.form);}
+  else if(b.hasAttribute("data-them")){
+    var v=b.getAttribute("data-them");
+    if(v==="off"){F.show=false;}else{F.show=true;F.them=v;F.opp=theirs(v);}
+  }
+  else if(b.hasAttribute("data-tool")){tool=b.getAttribute("data-tool");}
+  else if(b.id==="fUndo"){F.lines.pop();}
+  else if(b.id==="fClear"){F.lines=[];}
+  else if(b.id==="fReset"){F=fresh();}
+  else if(b.id==="fFull"){if(fbFull()){fbExit();}else{fbEnter();}return;}
+  fRender();
+});
+
+/* full screen: use the real thing where the browser allows it, and a fixed overlay either way (iPhone has no element full screen) */
+function fsEl(){return document.fullscreenElement||document.webkitFullscreenElement;}
+function fbFull(){return fb.classList.contains("full");}
+function fbSet(on){
+  fb.classList.toggle("full",on);
+  document.documentElement.classList.toggle("noscroll",on);
+  $("#fFull").textContent=on?"Exit full screen":"Full screen";
+}
+function fbEnter(){
+  fbSet(true);
+  var r=fb.requestFullscreen||fb.webkitRequestFullscreen;
+  if(r){try{var pr=r.call(fb);if(pr&&pr.catch){pr.catch(function(){});}}catch(e){}}
+}
+function fbExit(){
+  fbSet(false);
+  if(fsEl()){(document.exitFullscreen||document.webkitExitFullscreen).call(document);}
+}
+function fsChange(){if(!fsEl()&&fbFull()){fbSet(false);}}
+document.addEventListener("fullscreenchange",fsChange);
+document.addEventListener("webkitfullscreenchange",fsChange);
+
+/* ---------- mode: watch it move / free board ---------- */
+var mode="watch";
+function setMode(m){
+  mode=m;
+  $("#watchMode").hidden=m!=="watch";$("#freeMode").hidden=m!=="free";
+  [].forEach.call(document.querySelectorAll("[data-mode]"),function(b){b.setAttribute("aria-pressed",b.getAttribute("data-mode")===m?"true":"false");});
+  if(m==="free"){S.playing=false;ui();fRender();}
+  else if(fbFull()){fbExit();}
+}
+[].forEach.call(document.querySelectorAll("[data-mode]"),function(b){
+  b.addEventListener("click",function(){
+    var m=b.getAttribute("data-mode");
+    history.replaceState(null,"",m==="free"?"#free":"#"+FORMS[S.form].scenes[S.scene].key);
+    setMode(m);
+  });
+});
+
 buildPlayers();
 loadScene(false);
+setMode(location.hash==="#free"?"free":"watch");
 requestAnimationFrame(tick);
 })();
 </script>

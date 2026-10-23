@@ -26,6 +26,18 @@ header.hero{border-bottom:3px solid var(--sky);
   background:repeating-linear-gradient(115deg,rgba(179,200,234,.06) 0 2px,transparent 2px 22px),
     radial-gradient(120% 90% at 70% 0%,#5A1A22 0%,#2E0F15 45%,#0D0B0F 85%)}
 .hero-inner{display:flex;align-items:center;gap:22px;padding:26px 0 22px;flex-wrap:wrap}
+/* formation switch, right-hand end of the top tab bar on every page */
+.navrow{display:flex;align-items:center;gap:10px}
+.navrow > .tabs-inner{flex:1 1 auto;min-width:0}
+.formsw{flex:0 0 auto;display:flex;align-items:center;gap:2px;background:var(--panel2);border:1px solid var(--line);
+  border-radius:999px;padding:3px 3px 3px 12px}
+.formsw span{font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.1em;
+  font-size:.74rem;color:var(--mute);margin-right:4px}
+.formsw button{border:0;background:transparent;border-radius:999px;padding:4px 12px;min-height:34px;
+  font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:.04em;font-size:.95rem;color:var(--mute)}
+.formsw button:hover{color:var(--paper)}
+.formsw button[aria-pressed="true"]{background:var(--sky);color:#3B0F16}
+@media(max-width:700px){.formsw{padding:2px}.formsw span{display:none}.formsw button{padding:3px 8px;min-height:32px;font-size:.85rem}}
 .crest{width:96px;height:96px;flex:0 0 auto;filter:drop-shadow(0 6px 18px rgba(0,0,0,.6))}
 .crest img{width:100%;height:100%;object-fit:contain;border-radius:50%;display:block}
 .hero-txt{flex:1 1 300px;min-width:220px}
@@ -47,11 +59,10 @@ nav.tabs{position:sticky;top:0;z-index:20;background:rgba(14,11,12,.95);
   text-decoration:none;padding:14px 13px;border-bottom:3px solid transparent}
 .tabs a:hover,.tabs a:focus-visible{color:var(--paper);outline:none}
 .tabs a[aria-current="page"]{color:var(--sky);border-bottom-color:var(--sky)}
-@media(max-width:480px){nav.tabs > .tabs-inner a{padding:14px 6px;font-size:.84rem;letter-spacing:.04em}nav.tabs > .tabs-inner{gap:0}}
+@media(max-width:480px){.navrow > .tabs-inner a{padding:14px 3px;font-size:.78rem;letter-spacing:.02em}.navrow > .tabs-inner{gap:0}.navrow{gap:4px}}
 /* second row of tabs under "Game Day" */
 .subtabs{background:var(--panel2);border-top:1px solid var(--line)}
 .subtabs a{font-size:.86rem;padding:11px 12px}
-html[data-vote="off"] .vote-link{display:none !important}
 
 /* SECTIONS */
 section{padding:40px 0;border-bottom:1px solid var(--line);scroll-margin-top:60px}
@@ -174,6 +185,7 @@ ul.plain li::marker{color:var(--sky)}
 .nm-meta div{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:8px 12px}
 .nm-meta dt{font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.1em;font-size:.75rem;color:var(--mute)}
 .nm-meta dd{margin:0;font-weight:600}
+.nm-meta dd + dt{margin-top:6px}
 .nm-after{margin:12px 0 0;color:var(--mute);font-size:.9rem}
 .nm-none{margin:0}
 .lt{width:100%;border-collapse:collapse;font-size:.9rem}
@@ -193,8 +205,83 @@ ul.fx .fx-d{font-weight:700}
 ul.fx .fx-v{grid-column:2;color:var(--mute);font-size:.88rem}
 @media(max-width:560px){ul.fx li{grid-template-columns:1fr}ul.fx .fx-v{grid-column:1}}
 
+/* PLAY FORWARD: principle cards with clips */
+.pcards{display:grid;gap:18px}
+.pcard{display:grid;grid-template-columns:minmax(200px,250px) 1fr;gap:24px;align-items:start;
+  background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px;scroll-margin-top:70px}
+@media(max-width:680px){.pcard{grid-template-columns:1fr}.pcard .clip{max-width:280px;margin:0 auto;width:100%}}
+.pcard video{display:block;width:100%;aspect-ratio:9/16;border-radius:6px;background:#000;object-fit:cover}
+.pcard .pn{font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;
+  letter-spacing:.16em;font-size:.8rem;color:var(--sky);margin:0 0 4px}
+.pcard h3{font-family:'Archivo Black',sans-serif;text-transform:uppercase;letter-spacing:0;
+  font-size:clamp(1.25rem,3vw,1.7rem);line-height:1.05;margin:0 0 14px}
+.ny{display:grid;gap:8px;margin:0 0 14px}
+.ny div{display:flex;gap:12px;align-items:baseline;background:var(--panel2);border:1px solid var(--line);
+  border-radius:6px;padding:11px 14px}
+.ny .lab{flex:0 0 46px;text-align:center;font-family:'Archivo Black',sans-serif;font-size:.74rem;
+  padding:3px 0;border-radius:4px}
+.ny .no{color:#BDB4B7}
+.ny .no .lab{background:var(--line);color:#D3CACD}
+.ny .yes{color:var(--paper);font-weight:600}
+.ny .yes .lab{background:var(--sky);color:#3B0F16}
+.rulebar{background:var(--maroon);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:700;
+  text-transform:uppercase;letter-spacing:.06em;font-size:1.2rem;padding:11px 15px;border-radius:4px;margin:0 0 12px;
+  border-left:5px solid var(--sky)}
+.pcard p.why{margin:0 0 10px;font-size:.95rem;color:#DDD6D8}
+.pcard p.who{margin:0;font-size:.9rem;color:var(--mute)}
+.pcard p.who b{color:var(--paper)}
+.pcard.gk .rulebar{background:#1E5A3A;border-left-color:#5FD38D}
+.pcard.gk .ny .yes .lab{background:#5FD38D}
+.pcard.gk .pn{color:#5FD38D}
+.clipcredit{margin:14px 0 0;font-size:.82rem;color:var(--mute)}
+
+/* jump list */
+.jump{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 6px}
+.jump a{font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.06em;
+  font-size:.92rem;text-decoration:none;color:var(--paper);background:var(--panel);border:1px solid var(--line);
+  border-radius:999px;padding:6px 13px}
+.jump a span{color:var(--sky);margin-right:6px}
+.jump a:hover,.jump a:focus-visible{border-color:var(--sky);outline:none}
+
+/* job cards */
+.roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.role{background:var(--panel);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.role-hd{display:flex;align-items:center;gap:11px;padding:13px 16px;background:var(--panel2);border-bottom:1px solid var(--line)}
+.role-hd b{font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.07em;font-size:1.12rem;display:block;line-height:1.1}
+.role-hd small{color:var(--mute);font-size:.82rem}
+.role ul{margin:0;padding:14px 18px 16px 34px}
+.role li{margin-bottom:7px;font-size:.94rem}
+.role li::marker{color:var(--sky)}
+
+/* session log */
+.log{width:100%;border-collapse:collapse;font-size:.94rem}
+.log th,.log td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+.log th{font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.08em;color:var(--sky);font-weight:700}
+.log td:first-child{white-space:nowrap;color:var(--mute)}
+
 /* "Add to home screen" and "Share" */
 .app-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:18px 0 0}
+/* cold weather: snowflake at the right of the tab bar, forecast lines on Training and in its pop-up */
+.coldbadge{flex:0 0 auto;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;padding:0;
+  background:#1B2433;border:1px solid var(--sky);color:var(--sky)}
+.coldbadge:hover{background:#243149;color:#fff}
+.wxs{display:grid;gap:10px;margin:0 0 12px}
+.wx{background:var(--panel2);border:1px solid var(--line);border-left:4px solid var(--line);border-radius:6px;padding:10px 14px;display:grid;gap:2px}
+.wx.cold{border-left-color:var(--sky)}
+.wx-k{font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.1em;font-size:.78rem;color:var(--mute);display:flex;align-items:center;gap:6px}
+.wx.cold .wx-k{color:var(--sky)}
+.wx-w{color:var(--mute);font-size:.9rem}
+.wx-s{font-weight:600}
+.wx.cold .wx-s{color:var(--sky)}
+#weatherNote{max-width:560px}
+.nm-meta .nm-wx dd{display:grid;gap:2px}
+.nm-wx-c{font-weight:400;color:var(--mute);font-size:.9rem}
+.nm-wx-b{display:flex;align-items:center;gap:6px;color:var(--sky);font-size:.9rem}
+.nm-wx.cold{border-color:var(--sky)}
+
+/* at the top of Home, above the next match */
+.top-actions{margin:-12px 0 26px}
+.top-actions .app-actions{justify-content:flex-start;margin:0}
 .app-btn{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:10px 18px;border-radius:999px;
   border:2px solid var(--sky);background:transparent;color:var(--paper);font-weight:600;font-size:.95rem}
 .app-actions .app-btn:first-child{background:var(--sky);color:#3B0F16}
@@ -227,6 +314,5 @@ footer .wk{margin:6px 0 0;font-size:.78rem;letter-spacing:.1em;text-transform:up
 @media print{
   body{background:#fff;color:#000}
   nav.tabs{display:none}
-  section{break-inside:avoid}
-}
+  section{break-inside:avoid}}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.hub a{transition:none}}

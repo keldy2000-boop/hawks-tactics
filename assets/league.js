@@ -56,6 +56,9 @@ window.HAWKS_LEAGUE = {
   var upcoming = L.fixtures.filter(function(f){ return when(f).getTime() + 2 * 3600e3 > Date.now(); });
   var updated = new Date(L.updated + "T12:00:00").toLocaleDateString("en-GB", { day:"numeric", month:"long" });
 
+  /* meet 30 minutes before kick-off */
+  var MEET_BEFORE = 30;
+  function meet(f){ var m = new Date(when(f).getTime() - MEET_BEFORE * 60e3); return (m.getHours() < 10 ? "0" : "") + m.getHours() + ":" + (m.getMinutes() < 10 ? "0" : "") + m.getMinutes(); }
   function opp(f){ return f[2] === L.us ? f[3] : f[2]; }
   function ha(f){ return f[2] === L.us ? "Home" : "Away"; }
 
@@ -70,7 +73,7 @@ window.HAWKS_LEAGUE = {
       nm.innerHTML =
         '<div class="nm-top"><span class="nm-count">' + count + '</span><span class="nm-ha nm-' + ha(f).toLowerCase() + '">' + ha(f) + '</span></div>' +
         '<div class="nm-vs"><span class="nm-us">Hawks</span><span class="nm-v">v</span><span class="nm-opp">' + esc(opp(f)) + '</span></div>' +
-        '<dl class="nm-meta"><div><dt>Date</dt><dd>' + esc(longDay(f)) + '</dd></div><div><dt>Kick-off</dt><dd>' + esc(f[1]) + '</dd></div><div><dt>Venue</dt><dd>' + esc(f[4]) + '</dd></div></dl>' +
+        '<dl class="nm-meta"><div><dt>Date</dt><dd>' + esc(longDay(f)) + '</dd></div><div><dt>Meet</dt><dd>' + meet(f) + '</dd><dt>Kick-off</dt><dd>' + esc(f[1]) + '</dd></div><div><dt>Venue</dt><dd>' + esc(f[4]) + '</dd></div></dl>' +
         (upcoming[1] ? '<p class="nm-after">After that: ' + esc(day(upcoming[1])) + ', ' + ha(upcoming[1]).toLowerCase() + ' v ' + esc(opp(upcoming[1])) + '</p>' : '');
     }
   }

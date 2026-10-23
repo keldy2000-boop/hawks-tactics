@@ -7,19 +7,19 @@ The playbook site for the Hawks: U12 girls, 9-a-side, playing 3-4-1 and 2-4-2. P
 ## Pages
 
 ```
-index.html            Home: next match and league table
-game-day.html         Game Day tab: pick the formation, links to the seven pages below it
-roles.html            How we play, your role in each position, three team rules
-board.html            Animated tactics board (shape, build-up, press, defend, attack)
+index.html            Home: next match, league table, and all our fixtures at the bottom
+roles.html            Game Day tab opens here: how we play, your role in each position, three team rules
+game-day.html         Old Game Day page, now a redirect to roles.html so old links keep working
+board.html            Tactics Board: animated moments (shape, build-up, press, defend, attack) with
+                      draggable counters, plus a free board (both teams, draw runs and passes, full screen)
+play-forward.html     Ten attacking principles, each with a clip from assets/clips/
 set-piece-roles.html  Every position's job at every restart
 goal-kicks.html       Building from our goal kicks + pressing theirs
 corners.html          Attacking and defending corners
 throw-ins.html        Throw-in options
-quiz.html             10-question quiz for your position
 training.html         Training: when and where, this block's focus, what to bring, practise at home
 parents.html          Parents' guide
-vote.html             Player of the Month voting
-table.html            Fixtures tab: next match, league table, all our fixtures (FA Full-Time)
+table.html            Old Fixtures page, now a redirect to the fixtures on Home so old links keep working
 assets/               crest, formation diagrams, shared styles and scripts
 ```
 
@@ -30,39 +30,15 @@ No build step and no dependencies. Open any page in a browser, or publish the fo
 | To change… | Edit |
 |---|---|
 | Page tabs, team name, footer name | `assets/site.js` (top of the file) |
+| Cold-weather snowflake | `assets/site.js`: `COLD` (8°C feels-like), `TRAINING` (day, times, place) and `VENUES` (a map point for each match venue; add any new venue here). Forecast from Open-Meteo, no key needed |
 | Team colours | `assets/site.css`: `--maroon` (claret) and `--sky` (sky blue) at the top, taken from the crest |
 | League table, fixtures, next match | `assets/league.js` (copy from FA Full-Time after each matchday; FA Full-Time can't be read live from the site) |
 | Home-screen icon | `assets/icon-*.png` (made from the crest) and `manifest.webmanifest` |
 | Message of the week | `assets/messages.js` (one line per week, changes every Monday) |
 | Board animations | `board.html`: the `FORMS` block |
 | Set-piece jobs per position | `set-piece-roles.html`: the `JOBS` block |
-| Quiz questions | `quiz.html`: `GENERAL`, `TEAM` and `ROLES` |
-| Squad numbers, vote link, season months | `vote.html`: the `SETTINGS` block |
+| Play Forward rules and clips | `play-forward.html`: one `<article class="pcard">` per rule. Clips go in `assets/clips/` as `name.mp4` with a poster frame `name.jpg` (360px wide). Add a row to the session log at the bottom after each session |
 
-The formation picked on the Game Day page is remembered on each phone. Content for one formation only goes inside `data-form="f341"` or `data-form="f242"`. A link can force a formation: `roles.html?f=242`.
+The formation is picked with the 3-4-1 / 2-4-2 switch at the right-hand end of the top tab bar on every page, and is remembered on each phone. Content for one formation only goes inside `data-form="f341"` or `data-form="f242"`. A link can force a formation: `roles.html?f=242`.
 
 Dashed sky-blue boxes mark content that's waiting on the coaches' meeting.
-
-## Player of the Month: storing votes
-
-Votes go to a Google Sheet that you own:
-
-1. Create a Google Sheet and open **Extensions → Apps Script**.
-2. Replace the code with:
-
-   ```js
-   function doPost(e) {
-     var sheet = SpreadsheetApp.getActive().getSheets()[0];
-     if (sheet.getLastRow() === 0) {
-       sheet.appendRow(["Time", "Month", "Vote type", "Voter's number", "Vote", "Why"]);
-     }
-     var p = e.parameter;
-     sheet.appendRow([new Date(), p.month, p.voteType, p.voterNumber, p.vote, p.why]);
-     return ContentService.createTextOutput("ok");
-   }
-   ```
-
-3. **Deploy → New deployment → Web app**. Execute as: *Me*. Who has access: *Anyone*.
-4. Copy the web app URL into `SCRIPT_URL` in `vote.html`.
-
-Voting opens the Sunday after the last Saturday of each month during the season (September–May) and stays open for 7 days.

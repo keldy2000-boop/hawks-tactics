@@ -2,75 +2,13 @@
 <html lang="en-GB">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hawks — Game Day</title>
-<link rel="icon" href="assets/crest.png">
-<link rel="apple-touch-icon" href="assets/icon-180.png">
-<link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#8E2B33">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Hawks">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/site.css">
+<!-- The Game Day tab now opens Roles; the formation switch is in the Game Day tab bar.
+     This page stays so old links and bookmarks still work. -->
+<meta http-equiv="refresh" content="0; url=roles.html">
+<script>location.replace("roles.html" + location.search);</script>
 </head>
 <body>
-<script src="assets/site.js" data-page="game-day" data-eyebrow="Game day" data-h1="Game Day" data-l2="Know Your Job" data-sub="Your role, our shape and every restart. Everything you need before kick-off."></script>
-
-<section id="pick">
-  <div class="wrap">
-    <p class="tag">Start here</p>
-    <h2>Pick your formation</h2>
-    <p class="sec-note">We play two shapes. Pick the one we're using and every Game Day page (roles, set pieces, the board and the quiz) will show you that one. Come back here to change it.</p>
-    <div class="picker">
-      <button type="button" class="pick" data-pick-form="f341" aria-pressed="false">
-        <img src="assets/formation-341.svg" alt="">
-        <span><b>3-4-1</b><span class="st">Current shape</span><span class="ds">Three centre backs, two wingers, two centre midfielders and a striker.</span><span class="on">Selected ✓</span></span>
-      </button>
-      <button type="button" class="pick" data-pick-form="f242" aria-pressed="false">
-        <img src="assets/formation-242.svg" alt="">
-        <span><b>2-4-2</b><span class="st">New shape</span><span class="ds">Two centre backs, two wing backs, two centre midfielders, the 10 and the 9.</span><span class="on">Selected ✓</span></span>
-      </button>
-    </div>
-    <p class="key" id="next" hidden>Now see <a href="roles.html">your role in the <span id="nextLabel"></span></a>, or watch it move on the <a href="board.html">animated board</a>.</p>
-  </div>
-</section>
-
-<section>
-  <div class="wrap">
-    <p class="tag">Pick a topic</p>
-    <h2>Everything for game day</h2>
-    <p class="sec-note">Each page shows the formation you've picked above.</p>
-    <div class="hub">
-      <a href="roles.html"><div class="k">Roles</div><div class="d">How we play, our team rules and your job in your position.</div></a>
-      <a href="board.html"><div class="k">Board</div><div class="d">Watch our shape move: build-up, press, defend and attack.</div></a>
-      <a href="set-piece-roles.html"><div class="k">Set Pieces</div><div class="d">Your job at every restart, on one card.</div></a>
-      <a href="goal-kicks.html"><div class="k">Goal Kicks</div><div class="d">Building from our own, and pressing theirs.</div></a>
-      <a href="corners.html"><div class="k">Corners</div><div class="d">How we attack them and how we defend them.</div></a>
-      <a href="throw-ins.html"><div class="k">Throw-Ins</div><div class="d">Keep it, don't gift it.</div></a>
-      <a href="quiz.html"><div class="k">Quiz</div><div class="d">Ten questions on your position. How well do you know it?</div></a>
-    </div>
-  </div>
-</section>
-
-<script>
-(function(){
-  var next = document.getElementById("next");
-  function show(){
-    if (!Hawks.hasPicked()) { return; }
-    var k = Hawks.form();
-    document.querySelectorAll(".pick").forEach(function(b){ b.setAttribute("aria-pressed", b.getAttribute("data-pick-form") === k ? "true" : "false"); });
-    document.getElementById("nextLabel").textContent = Hawks.FORMS[k].label;
-    next.hidden = false;
-  }
-  show();
-  document.addEventListener("hawks:form", show);
-})();
-</script>
-<script src="assets/messages.js"></script>
-<script>Hawks.footer();</script>
+<p><a href="roles.html">Go to Game Day</a></p>
 </body>
 </html>
