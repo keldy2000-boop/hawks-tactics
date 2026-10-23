@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-5 28 76 54" role="img" aria-label="Our throw-in in the 3-4-1: the left winger throws. First choice forward, down the line for the striker. If that's not on, keep it with a short throw to the nearest centre mid. The other centre mid and the left centre back stay behind the ball as safety.">
+<defs>
+<marker id="tg" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="3.2" markerHeight="3.2" orient="auto"><path d="M0 0L10 5L0 10z" fill="#e8b33a"/></marker>
+<marker id="ts" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="3.2" markerHeight="3.2" orient="auto"><path d="M0 0L10 5L0 10z" fill="#b3c8ea"/></marker>
+<marker id="tw" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="3.2" markerHeight="3.2" orient="auto"><path d="M0 0L10 5L0 10z" fill="#ffffff"/></marker>
+</defs>
+<rect x="-5" y="-4" width="78" height="108" fill="#24603f"/><rect x="0" y="0" width="68" height="100" fill="#2f7a4f"/>
+<g fill="#000" opacity=".07"><rect x="0" y="30" width="68" height="10"/><rect x="0" y="50" width="68" height="10"/><rect x="0" y="70" width="68" height="10"/></g>
+<g fill="none" stroke="#f2f5ec" stroke-width=".5"><rect x="0" y="0" width="68" height="100"/><line x1="0" y1="50" x2="68" y2="50"/><circle cx="34" cy="50" r="7"/></g>
+<!-- the striker's run down the line, then 1: the throw forward into it -->
+<path d="M14 45Q8 43 6.5 37" fill="none" stroke="#ffffff" stroke-width=".7" stroke-dasharray="1.6 1.2" marker-end="url(#tw)"/>
+<path d="M0.5 54L5.2 38.6" fill="none" stroke="#e8b33a" stroke-width=".9" marker-end="url(#tg)"/>
+<!-- 2: keep it, short to the centre mid -->
+<path d="M1.2 56L9.4 56.8" fill="none" stroke="#b3c8ea" stroke-width=".7" stroke-dasharray="1.2 1" marker-end="url(#ts)"/>
+<g font-family="Arial,sans-serif" font-weight="800" font-size="2.8" text-anchor="middle">
+<g transform="translate(-0.5 46)"><circle r="2.2" fill="#e8b33a"/><text y="1" fill="#3b0f16">1</text></g>
+<g transform="translate(5.5 60)"><circle r="2.2" fill="#b3c8ea"/><text y="1" fill="#3b0f16">2</text></g>
+</g>
+<g font-family="Arial,sans-serif" font-weight="800" font-size="2.8" fill="#fff" text-anchor="middle">
+<g transform="translate(-1.8 55)"><circle r="3.6" fill="#8e2b33" stroke="#fff" stroke-width=".55"/><text y="1">W</text></g>
+<g transform="translate(14 46.5)"><circle r="3.6" fill="#8e2b33" stroke="#fff" stroke-width=".55"/><text y="1">ST</text></g>
+<g transform="translate(13 57)"><circle r="3.6" fill="#8e2b33" stroke="#fff" stroke-width=".55"/><text y="1">CM</text></g>
+<g transform="translate(26 62)"><circle r="3.6" fill="#8e2b33" stroke="#fff" stroke-width=".55"/><text y="1">CM</text></g>
+<g transform="translate(10 70)"><circle r="3.6" fill="#8e2b33" stroke="#fff" stroke-width=".55"/><text y="1">CB</text></g>
+<g transform="translate(30 76)"><circle r="3.6" fill="#8e2b33" stroke="#fff" stroke-width=".55"/><text y="1">CB</text></g>
+<g transform="translate(48 72)"><circle r="3.6" fill="#8e2b33" stroke="#fff" stroke-width=".55"/><text y="1">CB</text></g>
+<g transform="translate(56 46)"><circle r="3.6" fill="#8e2b33" stroke="#fff" stroke-width=".55"/><text y="1">W</text></g>
+</g>
+<g font-family="Arial,sans-serif" font-weight="700" font-size="2.2" fill="#e6e6ea">
+<text x="30.5" y="61.2">safety</text><text x="14.5" y="69.2">safety</text>
+</g>
+<circle cx="-1.8" cy="51" r="1.3" fill="#fff" stroke="#18211c" stroke-width=".4"/>
+</svg>

@@ -164,6 +164,7 @@ html.noscroll,html.noscroll body{overflow:hidden}
           <div class="seg" role="group" aria-label="Our formation"><span class="sl">Us</span><button type="button" data-us="f341">3-4-1</button><button type="button" data-us="f242">2-4-2</button></div>
           <div class="seg" role="group" aria-label="Their formation"><span class="sl">Them</span><button type="button" data-them="f341">3-4-1</button><button type="button" data-them="f242">2-4-2</button><button type="button" data-them="off">Hide</button></div>
           <div class="seg" role="group" aria-label="Tool"><span class="sl">Tool</span><button type="button" data-tool="move">Move</button><button type="button" data-tool="run">Draw run</button><button type="button" data-tool="pass">Draw pass</button></div>
+          <div class="seg" role="group" aria-label="Start from"><span class="sl">Start</span><button type="button" data-preset="kick">Kick-off</button><button type="button" data-preset="corner">Corner</button><button type="button" data-preset="defcorner">Their corner</button></div>
           <div class="seg"><button type="button" id="fUndo">Undo line</button><button type="button" id="fClear">Clear lines</button><button type="button" id="fReset">Reset</button><button type="button" id="fFull" class="fs">Full screen</button></div>
         </div>
         <div class="fpitch">
@@ -246,11 +247,12 @@ var FORMS={
     {c:"Turn and play forward to the wing back. We have beaten the press.",b:"LWB",p:{LWB:[6,50],TEN:[22,40],NINE:[38,28]},o:function(o){return om(o,{6:[19,57],7:[34,64],4:[12,56],5:[56,50]});}}
    ]},
    {key:"press",name:"Press",aim:"Winning the ball back high up the pitch.",steps:[
-    {c:"Their keeper has the ball. We squeeze up. The 9 and 10 stay close to their back three.",o:OPP_BUILD,b:"o0",p:{GK:[34,70],LCB:[29,58],RCB:[39,58],LWB:[10,46],RWB:[58,46],LCM:[25,52],RCM:[43,52],TEN:[28,32],NINE:[40,30]}},
-    {c:"Trigger: the pass goes to their left centre back. The 9 closes her down, the 10 covers the pass back to the middle.",b:"o1",p:{NINE:[27,27],TEN:[36,27],LWB:[10,42],RWB:[58,42]}},
-    {c:"She plays it wide to their winger. The wing back jumps to her, midfield slides across and traps her on the touchline.",b:"o4",p:{LWB:[13,38],LCM:[18,47],RCM:[34,48],NINE:[25,27],TEN:[33,33],LCB:[24,56],RCB:[36,56],RWB:[50,44],GK:[30,66]}},
+    {c:"Their keeper has the ball. We squeeze up. The 9 waits by their middle centre back, the 10 on her own side by their left centre back.",o:OPP_BUILD,b:"o0",p:{GK:[34,70],LCB:[29,58],RCB:[39,58],LWB:[10,46],RWB:[58,46],LCM:[25,52],RCM:[43,52],TEN:[24,30],NINE:[36,25]}},
+    {c:"Trigger: the keeper passes to their middle centre back. The 9 closes her down, curving her run so the only pass is out wide.",b:"o2",p:{NINE:[39,22]}},
+    {c:"She's forced wide to their left centre back. The 9 curves across to block the pass back to the middle, and the 10 presses the ball. They don't cross.",b:"o1",p:{NINE:[27,20],TEN:[22,29],LWB:[10,42],RWB:[58,42]}},
+    {c:"No way back inside, so she plays it wide to their winger. The wing back jumps to her, midfield slides across and traps her on the touchline.",b:"o4",p:{LWB:[13,38],LCM:[18,47],RCM:[34,48],NINE:[27,22],TEN:[20,31],LCB:[24,56],RCB:[36,56],RWB:[50,44],GK:[30,66]}},
     {c:"Ball won. Our midfielder takes it while they are still facing the wrong way.",b:"LCM",p:{LCM:[18,45]},o:function(o){return om(o,{4:[6,40],6:[28,39]});}},
-    {c:"Quick pass to the 10. The 9 runs in behind.",b:"TEN",p:{TEN:[26,32],NINE:[30,14]},o:function(o){return om(o,{1:[20,25],2:[39,21],3:[48,20]});}}
+    {c:"Quick pass to the 10. The 9 runs in behind.",b:"TEN",p:{TEN:[24,32],NINE:[30,14]},o:function(o){return om(o,{1:[20,25],2:[39,21],3:[48,20]});}}
    ]},
    {key:"defend",name:"Defend",aim:"Staying compact when they have the ball in our half.",steps:[
     {c:"Two banks. The 10 and 9 screen in front, four across the middle, two centre backs behind.",o:OPP_ATT,b:"o8",p:{GK:[34,93],LCB:[26,80],RCB:[42,80],LWB:[10,68],LCM:[26,68],RCM:[42,68],RWB:[58,68],TEN:[28,52],NINE:[40,50]}},
@@ -558,6 +560,19 @@ function theirs(k){
   return FORMS[k].ids.map(function(id){return [68-o[id][0],Math.round((100-o[id][1])*10)/10];});
 }
 function fresh(){return {form:S.form,pos:kick(S.form),them:"f341",opp:theirs("f341"),show:true,ball:[34,50],lines:[]};}
+/* corner: ball on the left flag at their end, keeper in goal, everyone else lined up outside the box ready to drag in */
+function cornerStart(k){
+  var ids=FORMS[k].ids.filter(function(id){return id!=="GK";}),o={GK:[34,93]};
+  ids.forEach(function(id,i){o[id]=[Math.round((8+i*52/(ids.length-1))*10)/10,32];});
+  return o;
+}
+/* their corner: ball on our left flag, their 3-4-1 set to attack it, ours lined up outside the box ready to drag into place */
+var THEIR_CORNER=[[34,7],[26.5,74.4],[34,49.7],[36.8,79.4],[23.5,91.1],[34.2,90.6],[-0.8,100.7],[44.3,92.6],[29.2,97.4]];
+function defCornerStart(k){
+  var ids=FORMS[k].ids.filter(function(id){return id!=="GK";}),o={GK:[38,96]};
+  ids.forEach(function(id,i){o[id]=[Math.round((8+i*52/(ids.length-1))*10)/10,62];});
+  return o;
+}
 var F=(function(){
   try{
     var x=JSON.parse(localStorage.getItem(FB_KEY));
@@ -650,6 +665,11 @@ fb.addEventListener("click",function(e){
   else if(b.hasAttribute("data-tool")){tool=b.getAttribute("data-tool");}
   else if(b.id==="fUndo"){F.lines.pop();}
   else if(b.id==="fClear"){F.lines=[];}
+  else if(b.hasAttribute("data-preset")){
+    if(b.getAttribute("data-preset")==="corner"){F.pos=cornerStart(F.form);F.show=false;F.ball=[1,1];F.lines=[];}
+    else if(b.getAttribute("data-preset")==="defcorner"){F.pos=defCornerStart(F.form);F.them="f341";F.opp=cp(THEIR_CORNER);F.show=true;F.ball=[1,99];F.lines=[];}
+    else{F.pos=kick(F.form);F.show=true;F.opp=theirs(F.them);F.ball=[34,50];F.lines=[];}
+  }
   else if(b.id==="fReset"){F=fresh();}
   else if(b.id==="fFull"){if(fbFull()){fbExit();}else{fbEnter();}return;}
   fRender();

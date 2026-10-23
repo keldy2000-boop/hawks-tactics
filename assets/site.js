@@ -27,8 +27,8 @@
   ];
 
   var FORMS = {
-    f341: { label: "3-4-1", tag: "Current shape" },
-    f242: { label: "2-4-2", tag: "New shape" }
+    f341: { label: "3-4-1" },
+    f242: { label: "2-4-2" }
   };
   var KEY = "hawksForm";
 
@@ -48,7 +48,6 @@
   var Hawks = window.Hawks = {
     FORMS: FORMS,
     form: function(){ return current; },
-    hasPicked: function(){ return !!FORMS[stored()] || !!fromUrl(); },
     setForm: function(k){
       if (!FORMS[k]) { return; }
       current = k;

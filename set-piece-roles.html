@@ -25,10 +25,7 @@
     <p class="tag">Quick reference</p>
     <h2>Your job at every restart</h2>
     <p class="sec-note">Find your position. All five restarts on one card. The detail for each is on its own page.</p>
-    <div class="todo">
-      <p class="tl">To agree at the coaches' meeting · agenda items 4–9</p>
-      <p>These cards fill in automatically once we've agreed goal kicks, corners and throw-ins for the <span id="fl"></span>.</p>
-    </div>
+    <p class="sec-note">Showing the <b id="fl"></b>.</p>
     <div class="pos-grid" id="grid"></div>
   </div>
 </section>
@@ -36,7 +33,7 @@
 <script>
 (function(){
   /* Positions in each formation, and each position's job at every restart.
-     Fill in JOBS after the meeting, e.g. JOBS.f341.GK.ourGK = "Scan before you receive..." */
+     Agreed at the coaches' meeting; the detail and diagrams are on each restart's own page. */
   var RESTARTS = [
     ["ourGK", "Our goal kicks", "goal-kicks.html#ours"],
     ["theirGK", "Their goal kicks", "goal-kicks.html#theirs"],
@@ -48,7 +45,67 @@
     f341: [["GK","Goalkeeper","Our spare player"],["CB","Centre Backs","LCB, CB & RCB"],["W","Wingers","LW & RW"],["CM","Centre Midfielders","LCM & RCM"],["ST","Striker","Up front on her own"]],
     f242: [["GK","Goalkeeper","Our spare player"],["CB","Centre Backs","LCB & RCB"],["WB","Wing Backs","LWB & RWB"],["CM","Centre Midfielders","LCM & RCM"],["10","The 10","Between their lines"],["9","The 9","Leads the line"]]
   };
-  var JOBS = { f341: {}, f242: {} };
+  var JOBS = {
+    f341: {
+      GK: { ourGK: "Take it. First choice wide to a winger, second a centre mid, then long. Go long if they press with two or man-mark.",
+            theirGK: "Stay alert behind the press. Talk to your back three.",
+            attCorner: "Stay in goal. One centre back stays back with you.",
+            defCorner: "In the middle of your goal. Centre backs are on the posts.",
+            throw: "Stay in goal and talk." },
+      CB: { ourGK: "Split wide and give the keeper options.",
+            theirGK: "Hold the line. Long ball: deal with it with the centre mids, no heading.",
+            attCorner: "Two go to the edge: one arrives late for the low one, one waits just outside the box. The middle centre back stays on halfway.",
+            defCorner: "One on each post. The middle centre back guards the space in front of the six-yard box.",
+            throw: "The nearest centre back stays behind the ball as safety." },
+      W:  { ourGK: "Get wide on the touchline: you're the keeper's first choice. Take it and play it down the line.",
+            theirGK: "Nearest winger squeezes up with the striker when we press.",
+            attCorner: "Left winger: near post. Right winger: far post.",
+            defCorner: "Near side: guard the near-post zone and step out to the short corner. Far side: guard the far zone.",
+            throw: "You take the throw on your side. Forward first, if not, keep it." },
+      CM: { ourGK: "Show in the middle: you're the keeper's second choice. Nearest one makes the run down the line.",
+            theirGK: "Long ball: deal with it with the centre backs, no heading.",
+            attCorner: "One takes it (on rotation). The other attacks the centre of the box.",
+            defCorner: "One in the six-yard box, ready to step to the near post. The other on the edge of the box.",
+            throw: "Nearest one shows short to keep it. The other stays behind the ball as safety." },
+      ST: { ourGK: "Stay high and stretch them.",
+            theirGK: "Lead the press with the nearest winger. Go when they pass to a centre back, take a bad touch or face their own goal.",
+            attCorner: "Stand in front of their keeper.",
+            defCorner: "Stay up on halfway, far side, as the outlet.",
+            throw: "Run down the line for the throw forward." }
+    },
+    f242: {
+      GK: { ourGK: "Take it. First choice wide to a wing back, second a centre mid, then long. Go long if they press with two or man-mark.",
+            theirGK: "Stay alert behind the press. Talk to your centre backs.",
+            attCorner: "Stay in goal. One centre back stays back with you.",
+            defCorner: "In the middle of your goal. Centre backs are on the posts.",
+            throw: "Stay in goal and talk." },
+      CB: { ourGK: "Split wide and give the keeper options.",
+            theirGK: "Hold the line. Long ball: deal with it with the centre mids, no heading.",
+            attCorner: "One arrives late from the edge for the low one. The other stays back.",
+            defCorner: "One on each post.",
+            throw: "The nearest centre back stays behind the ball as safety." },
+      WB: { ourGK: "Get wide on the touchline: you're the keeper's first choice. Take it and play it down the line.",
+            theirGK: "Hold your position in the line of four.",
+            attCorner: "Left wing back: near post. Right wing back: far post.",
+            defCorner: "Near side: guard the near-post zone and step out to the short corner. Far side: guard the far zone.",
+            throw: "You take the throw on your side. Forward first, if not, keep it." },
+      CM: { ourGK: "Show in the middle: you're the keeper's second choice.",
+            theirGK: "Long ball: deal with it with the centre backs, no heading.",
+            attCorner: "One takes it (on rotation). The other attacks the centre of the box.",
+            defCorner: "One in the six-yard box, the other guarding the space in front of it.",
+            throw: "One stays behind the ball as safety." },
+      "10": { ourGK: "Make the run down the line when the wing back gets it.",
+            theirGK: "Stay on your side. When the 9 forces it wide, press the wide centre back. Don't cross with the 9.",
+            attCorner: "Attack the centre of the box.",
+            defCorner: "On the edge of the box.",
+            throw: "Show short so we can keep it." },
+      "9": { ourGK: "Stay high and stretch them.",
+            theirGK: "Close down their middle centre back, curve your run to force it wide, then block the pass back to the middle.",
+            attCorner: "Stand in front of their keeper.",
+            defCorner: "Stay up on halfway, far side, as the outlet.",
+            throw: "Run down the line for the throw forward." }
+    }
+  };
 
   function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]; }); }
   function render(){

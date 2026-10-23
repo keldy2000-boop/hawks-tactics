@@ -2,7 +2,7 @@
    Team colours come from the AFC Tickton crest: claret (--maroon) and sky blue (--sky). Change them here to rebrand the whole site. */
 :root{
   --ink:#0D0B0F; --panel:#18151B; --panel2:#121015; --line:#302A33;
-  --maroon:#8E2B33; --maroon-hi:#B5525A; --sky:#B3C8EA; --sky-dim:#5E7394;
+  --maroon:#8E2B33; --sky:#B3C8EA;
   --paper:#F4F1EE; --mute:#A79EA1; --grass:#24603F;
   color-scheme:dark;
 }
@@ -15,7 +15,6 @@ body{margin:0;background:var(--ink);color:var(--paper);
 a{color:var(--sky)}
 button{font:inherit;color:inherit;cursor:pointer}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--sky);outline-offset:2px}
-.hidden{display:none !important}
 
 /* formation-specific content: only the picked formation shows */
 html[data-form="f341"] [data-form="f242"],
@@ -74,19 +73,6 @@ h2{font-family:'Archivo Black',sans-serif;text-transform:uppercase;
 h3{font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.08em;
   font-size:1.18rem;margin:26px 0 10px}
 
-/* placeholder for anything waiting on the coaches' meeting */
-.todo{border:2px dashed var(--sky-dim);background:rgba(179,200,234,.05);border-radius:8px;
-  padding:16px 18px;margin:0 0 16px}
-.todo .tl{font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;
-  letter-spacing:.1em;font-size:.85rem;color:var(--sky);margin:0 0 6px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.todo .tl::before{content:"";width:10px;height:10px;border-radius:50%;background:var(--sky)}
-.todo p{margin:0 0 6px;color:#DDD6D8;font-size:.95rem}
-.todo ul{margin:6px 0 0;padding-left:20px;color:var(--mute);font-size:.92rem}
-.todo li{margin-bottom:4px}
-.todo :last-child{margin-bottom:0}
-.draft{display:inline-block;font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;
-  letter-spacing:.1em;font-size:.72rem;color:#3B0F16;background:var(--sky);border-radius:3px;padding:1px 6px;vertical-align:2px}
-
 /* diagram + copy split */
 .split{display:grid;grid-template-columns:minmax(260px,400px) 1fr;gap:28px;align-items:start}
 @media(max-width:760px){.split{grid-template-columns:1fr}}
@@ -96,6 +82,9 @@ h3{font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spa
 
 .key{border-left:4px solid var(--sky);background:var(--panel2);padding:12px 16px;
   border-radius:0 6px 6px 0;margin-top:14px;font-size:.95rem}
+ol.steps{margin:0 0 6px;padding-left:22px}
+ol.steps li{margin-bottom:6px}
+ol.steps li::marker{color:var(--sky);font-weight:700}
 ul.plain{margin:0;padding-left:20px}
 ul.plain li{margin-bottom:7px}
 ul.plain li::marker{color:var(--sky)}
@@ -123,28 +112,6 @@ ul.plain li::marker{color:var(--sky)}
 .pos dd.tbc{color:var(--mute);font-style:italic}
 .pos dd + dt{border-top:1px solid var(--line);margin-top:4px}
 
-/* home hub cards */
-.hub{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:8px}
-.hub a{display:block;text-decoration:none;color:var(--paper);background:var(--panel);
-  border:1px solid var(--line);border-radius:8px;padding:20px 18px;transition:border-color .15s,transform .15s}
-.hub a:hover,.hub a:focus-visible{border-color:var(--sky);transform:translateY(-2px);outline:none}
-.hub .k{font-family:'Barlow Condensed',sans-serif;text-transform:uppercase;letter-spacing:.08em;
-  color:var(--sky);font-size:1.3rem;margin-bottom:4px}
-.hub .d{color:var(--mute);font-size:.92rem}
-
-/* landing: formation picker */
-.picker{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
-.pick{display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:center;text-align:left;
-  background:var(--panel);border:2px solid var(--line);border-radius:10px;padding:14px;color:var(--paper)}
-.pick:hover{border-color:var(--maroon-hi)}
-.pick[aria-pressed="true"]{border-color:var(--sky);background:#1B1D28}
-.pick img{width:100%;border-radius:6px;display:block}
-.pick b{display:block;font-family:'Archivo Black',sans-serif;font-size:2rem;line-height:1}
-.pick .st{display:inline-block;margin-top:6px;font-family:'Barlow Condensed',sans-serif;font-weight:700;
-  text-transform:uppercase;letter-spacing:.1em;font-size:.8rem;color:var(--sky)}
-.pick .ds{display:block;color:var(--mute);font-size:.9rem;margin-top:6px}
-.pick .on{display:none;margin-top:8px;font-weight:700;color:var(--sky);font-size:.9rem}
-.pick[aria-pressed="true"] .on{display:block}
 
 /* set-piece matrix */
 .sp dt{display:flex;gap:8px;align-items:center}
@@ -315,4 +282,4 @@ footer .wk{margin:6px 0 0;font-size:.78rem;letter-spacing:.1em;text-transform:up
   body{background:#fff;color:#000}
   nav.tabs{display:none}
   section{break-inside:avoid}}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.hub a{transition:none}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-3 -4 74 108" role="img" aria-label="Our goal kick in the 2-4-2: the keeper's first choice is the wing back, second choice a centre mid. The wing back plays it down the line for the 10 running into the channel.">
+<defs>
+<marker id="gg" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="3.2" markerHeight="3.2" orient="auto"><path d="M0 0L10 5L0 10z" fill="#e8b33a"/></marker>
+<marker id="gs" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="3.2" markerHeight="3.2" orient="auto"><path d="M0 0L10 5L0 10z" fill="#b3c8ea"/></marker>
+<marker id="gw" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="3.2" markerHeight="3.2" orient="auto"><path d="M0 0L10 5L0 10z" fill="#ffffff"/></marker>
+</defs>
+<rect x="-3" y="-4" width="74" height="108" fill="#24603f"/><rect x="0" y="0" width="68" height="100" fill="#2f7a4f"/>
+<g fill="#000" opacity=".07"><rect x="0" y="10" width="68" height="10"/><rect x="0" y="30" width="68" height="10"/><rect x="0" y="50" width="68" height="10"/><rect x="0" y="70" width="68" height="10"/><rect x="0" y="90" width="68" height="10"/></g>
+<g fill="none" stroke="#f2f5ec" stroke-width=".5"><rect x="0" y="0" width="68" height="100"/><line x1="0" y1="50" x2="68" y2="50"/><circle cx="34" cy="50" r="7"/><rect x="17" y="0" width="34" height="14"/><rect x="26" y="0" width="16" height="5"/><rect x="17" y="86" width="34" height="14"/><rect x="26" y="95" width="16" height="5"/><rect x="29" y="-2.2" width="10" height="2.2"/><rect x="29" y="100" width="10" height="2.2"/></g>
+<!-- 1: keeper to the wing back -->
+<path d="M32 92L9.5 71.5" fill="none" stroke="#e8b33a" stroke-width=".9" marker-end="url(#gg)"/>
+<!-- 2: second choice, a centre mid -->
+<path d="M33.5 92L27 75.5" fill="none" stroke="#b3c8ea" stroke-width=".7" stroke-dasharray="1.2 1" marker-end="url(#gs)"/>
+<!-- wing back plays it down the line, the 10 runs into the channel -->
+<path d="M6 64L5 40" fill="none" stroke="#e8b33a" stroke-width=".8" stroke-dasharray="2 1.4" marker-end="url(#gg)"/>
+<path d="M24 48Q13 46 9 40" fill="none" stroke="#ffffff" stroke-width=".7" stroke-dasharray="1.6 1.2" marker-end="url(#gw)"/>
+<g font-family="Arial,sans-serif" font-weight="800" font-size="2.8" text-anchor="middle">
+<g transform="translate(19 80)"><circle r="2.4" fill="#e8b33a"/><text y="1" fill="#3b0f16">1</text></g>
+<g transform="translate(33 83)"><circle r="2.4" fill="#b3c8ea"/><text y="1" fill="#3b0f16">2</text></g>
+</g>
+<g transform="translate(34 96)"><circle r="3.9" fill="#b3c8ea" stroke="#fff" stroke-width=".55"/><text y="1" text-anchor="middle" font-family="Arial,sans-serif" font-weight="800" font-size="2.8" fill="#5a1a22">GK</text></g>
+<circle cx="37.5" cy="93" r="1.5" fill="#fff" stroke="#18211c" stroke-width=".4"/>
+<g font-family="Arial,sans-serif" font-weight="800" font-size="2.8" fill="#fff" text-anchor="middle">
+<g transform="translate(14 86)"><circle r="3.9" fill="#8e2b33" stroke="#fff" stroke-width=".55"/><text y="1">CB</text></g>
+<g transform="translate(54 86)"><circle r="3.9" fill="#8e2b33" stroke="#fff" stroke-width=".55"/><text y="1">CB</text></g>
+<g transform="translate(6 68)"><circle r="3.9" fill="#8e2b33" stroke="#fff" stroke-width=".55"/><text y="1">WB</text></g>
+<g transform="translate(25 72)"><circle r="3.9" fill="#8e2b33" stroke="#fff" stroke-width=".55"/><text y="1">CM</text></g>
+<g transform="translate(43 72)"><circle r="3.9" fill="#8e2b33" stroke="#fff" stroke-width=".55"/><text y="1">CM</text></g>
+<g transform="translate(62 68)"><circle r="3.9" fill="#8e2b33" stroke="#fff" stroke-width=".55"/><text y="1">WB</text></g>
+<g transform="translate(27 50)"><circle r="3.9" fill="#8e2b33" stroke="#fff" stroke-width=".55"/><text y="1">10</text></g>
+<g transform="translate(41 42)"><circle r="3.9" fill="#8e2b33" stroke="#fff" stroke-width=".55"/><text y="1">9</text></g>
+</g>
+</svg>

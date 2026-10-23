@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-3 58 74 46" role="img" aria-label="Defending a corner in the 2-4-2, zonal: one centre back on the near post and one on the far post, the keeper in the middle of her goal, a centre mid in the six-yard box with the other in front of it, the wing backs guarding the near and far zones (the near one steps out to the short option), the 10 on the edge of the box and the 9 out wide on halfway as the outlet.">
+<defs>
+<marker id="dw" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="3.2" markerHeight="3.2" orient="auto"><path d="M0 0L10 5L0 10z" fill="#ffffff"/></marker>
+</defs>
+<rect x="-3" y="-4" width="74" height="108" fill="#24603f"/><rect x="0" y="0" width="68" height="100" fill="#2f7a4f"/>
+<g fill="#000" opacity=".07"><rect x="0" y="70" width="68" height="10"/><rect x="0" y="90" width="68" height="10"/></g>
+<g fill="none" stroke="#f2f5ec" stroke-width=".5"><rect x="0" y="0" width="68" height="100"/><rect x="17" y="86" width="34" height="14"/><rect x="26" y="95" width="16" height="5"/><rect x="29" y="100" width="10" height="2.2"/></g>
+<g fill="#f2f5ec"><circle cx="34" cy="90" r=".5"/></g>
+<!-- zones -->
+<g fill="#b3c8ea" opacity=".16">
+<circle cx="27.8" cy="97.4" r="4.6"/><circle cx="42" cy="99" r="4.6"/><circle cx="32.2" cy="93" r="4.6"/>
+<circle cx="35.5" cy="87.6" r="4.6"/><circle cx="24.5" cy="91" r="4.6"/><circle cx="42.6" cy="92.4" r="4.6"/>
+</g>
+<!-- the near-side wing back steps out to the short option -->
+<path d="M21.4 91.2L11.4 92.2" fill="none" stroke="#ffffff" stroke-width=".6" stroke-dasharray="1.4 1" marker-end="url(#dw)"/>
+<g transform="translate(36 98)"><circle r="2.9" fill="#b3c8ea" stroke="#fff" stroke-width=".45"/><text y=".8" text-anchor="middle" font-family="Arial,sans-serif" font-weight="800" font-size="2.2" fill="#5a1a22">GK</text></g>
+<g font-family="Arial,sans-serif" font-weight="800" font-size="2.2" fill="#fff" text-anchor="middle">
+<g transform="translate(27.8 97.4)"><circle r="2.9" fill="#8e2b33" stroke="#fff" stroke-width=".45"/><text y=".8">CB</text></g>
+<g transform="translate(42 99)"><circle r="2.9" fill="#8e2b33" stroke="#fff" stroke-width=".45"/><text y=".8">CB</text></g>
+<g transform="translate(32.2 93)"><circle r="2.9" fill="#8e2b33" stroke="#fff" stroke-width=".45"/><text y=".8">CM</text></g>
+<g transform="translate(35.5 87.6)"><circle r="2.9" fill="#8e2b33" stroke="#fff" stroke-width=".45"/><text y=".8">CM</text></g>
+<g transform="translate(24.5 91)"><circle r="2.9" fill="#8e2b33" stroke="#fff" stroke-width=".45"/><text y=".8">WB</text></g>
+<g transform="translate(42.6 92.4)"><circle r="2.9" fill="#8e2b33" stroke="#fff" stroke-width=".45"/><text y=".8">WB</text></g>
+<g transform="translate(34.5 69.5)"><circle r="2.9" fill="#8e2b33" stroke="#fff" stroke-width=".45"/><text y=".8">10</text></g>
+</g>
+<!-- the 9 stays up on halfway, far side -->
+<g transform="translate(62 62)"><path d="M0 -1.5V-3.6" stroke="#fff" stroke-width=".5" marker-end="url(#dw)"/><text y="1.5" text-anchor="middle" font-family="Arial,sans-serif" font-weight="800" font-size="2.2" fill="#fff">9 on halfway</text></g>
+<circle cx="1" cy="99" r="1.3" fill="#fff" stroke="#18211c" stroke-width=".4"/>
+</svg>
