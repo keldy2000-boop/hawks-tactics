@@ -12,7 +12,8 @@ roles.html            Game Day tab opens here: how we play, your role in each po
 game-day.html         Old Game Day page, now a redirect to roles.html so old links keep working
 board.html            Tactics Board: animated moments (shape, build-up, press, defend, attack, kick-offs) with
                       draggable counters, plus a free board (both teams, draw runs and passes, full screen,
-                      start from kick-off, our corner or their corner)
+                      start from kick-off, our corner or their corner; add steps to make your own
+                      animation; Saved boards keeps them on this device)
 play-forward.html     The Ten Rules: ten attacking principles, each with a clip from assets/clips/
 set-piece-roles.html  Every position's job at every restart
 goal-kicks.html       Our goal kicks and pressing theirs, with diagrams

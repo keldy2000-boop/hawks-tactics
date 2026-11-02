@@ -93,6 +93,19 @@ html.noscroll,html.noscroll body{overflow:hidden}
 .fb.full .fpitch{flex:1 1 auto;min-height:0;max-width:none}
 .fb.full svg#free{width:100%;height:100%}
 .fb.full .legend{display:none}
+/* steps and saved boards */
+.seg button.sv{background:var(--sky);border-color:var(--sky);color:#3B0F16}
+.seg button:disabled{opacity:.4;cursor:default}
+.si{font-size:.85rem;color:var(--mute);margin-left:4px}
+.fb.playing svg#free{pointer-events:none}
+.sb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+@media(min-width:700px){.sb-grid{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}}
+.sb{background:var(--panel);border:1px solid var(--line);border-radius:8px;overflow:hidden;display:flex;flex-direction:column}
+.sb svg{display:block;width:100%;height:auto;background:#2f7a4f}
+.sb-b{padding:12px 14px;display:grid;gap:8px}
+.sb-n{font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.06em;font-size:1.1rem;margin:0}
+.sb-m{color:var(--mute);font-size:.85rem;margin:0}
+.sb-empty{background:var(--panel);border:1px dashed var(--line);border-radius:8px;padding:18px;color:var(--mute)}
 </style>
 </head>
 <body>
@@ -103,6 +116,7 @@ html.noscroll,html.noscroll body{overflow:hidden}
     <div class="seg modes" role="group" aria-label="Board">
       <button type="button" data-mode="watch" aria-pressed="true">Watch it move</button>
       <button type="button" data-mode="free" aria-pressed="false">Free board</button>
+      <button type="button" data-mode="saved" aria-pressed="false">Saved boards</button>
     </div>
 
     <div id="watchMode">
@@ -166,6 +180,7 @@ html.noscroll,html.noscroll body{overflow:hidden}
           <div class="seg" role="group" aria-label="Tool"><span class="sl">Tool</span><button type="button" data-tool="move">Move</button><button type="button" data-tool="run">Draw run</button><button type="button" data-tool="pass">Draw pass</button></div>
           <div class="seg" role="group" aria-label="Start from"><span class="sl">Start</span><button type="button" data-preset="kick">Kick-off</button><button type="button" data-preset="corner">Corner</button><button type="button" data-preset="defcorner">Their corner</button></div>
           <div class="seg"><button type="button" id="fUndo">Undo line</button><button type="button" id="fClear">Clear lines</button><button type="button" id="fReset">Reset</button><button type="button" id="fFull" class="fs">Full screen</button></div>
+          <div class="seg" role="group" aria-label="Steps"><span class="sl">Steps</span><button type="button" id="fAddStep">+ Add step</button><button type="button" id="fPlay">&#9654; Play</button><button type="button" id="fClearSteps">Clear steps</button><button type="button" id="fSaveBoard" class="sv">Save board</button><span class="si" id="fStepInfo" aria-live="polite"></span></div>
         </div>
         <div class="fpitch">
           <svg id="free" viewBox="-3 -4 74 108" role="img" aria-label="Free tactics board">
@@ -195,6 +210,12 @@ html.noscroll,html.noscroll body{overflow:hidden}
           <span><i class="us"></i>Hawks</span><span><i class="gk"></i>Keeper</span><span><i class="them"></i>Other team</span><span>We attack up the pitch</span>
         </div>
       </div>
+      <p class="fine">To animate: set the board up and tap <b>Add step</b>. Move players, the ball and lines, then <b>Add step</b> again, as many times as you like. <b>Play</b> moves smoothly from step to step. <b>Save board</b> keeps it in Saved boards on this device.</p>
+    </div>
+
+    <div id="savedMode" hidden>
+      <p class="aim">Boards you've saved on this device. Open one to change it on the free board, or play it if it has steps.</p>
+      <div id="savedList"></div>
     </div>
   </div>
 </section>
@@ -618,17 +639,25 @@ function fLine(l,parent){
   var a=l.a,b=l.b,e=Math.hypot(b[0]-a[0],b[1]-a[1])>1.5?shorten(a,b,.6):b;
   return el("line",{x1:a[0],y1:a[1],x2:e[0],y2:e[1],"class":l.t==="pass"?"fp":"fr","marker-end":"url(#"+(l.t==="pass"?"fg":"fw")+")"},parent);
 }
-function fRender(){
-  fLines.innerHTML="";F.lines.forEach(function(l){fLine(l,fLines);});
-  fOpp.innerHTML="";
-  if(F.show){
-    var th=FORMS[F.them];
-    th.ids.forEach(function(id,i){counter(fOpp,"o:"+i,F.opp[i],3.3,"#3a3a42","#a2a2ab",th.names[id],"lbl o");});
+/* draw one board (the working board, or a step while playing) */
+function fDraw(s,lines,oppG,usG,ballEl){
+  lines.innerHTML="";s.lines.forEach(function(l){fLine(l,lines);});
+  oppG.innerHTML="";
+  if(s.show){
+    var th=FORMS[s.them];
+    th.ids.forEach(function(id,i){counter(oppG,"o:"+i,s.opp[i],3.3,"#3a3a42","#a2a2ab",th.names[id],"lbl o");});
   }
-  fUs.innerHTML="";
-  var us=FORMS[F.form];
-  us.ids.forEach(function(id){var gk=id==="GK";counter(fUs,"u:"+id,F.pos[id],3.7,gk?"#b3c8ea":"#8e2b33","#fff",us.names[id],"lbl"+(gk?" k":""));});
-  fBall.setAttribute("cx",F.ball[0]);fBall.setAttribute("cy",F.ball[1]);
+  usG.innerHTML="";
+  var us=FORMS[s.form];
+  us.ids.forEach(function(id){var gk=id==="GK";counter(usG,"u:"+id,s.pos[id],3.7,gk?"#b3c8ea":"#8e2b33","#fff",us.names[id],"lbl"+(gk?" k":""));});
+  ballEl.setAttribute("cx",s.ball[0]);ballEl.setAttribute("cy",s.ball[1]);
+}
+function fRender(){
+  fDraw(F,fLines,fOpp,fUs,fBall);
+  var n=(F.steps||[]).length;
+  $("#fStepInfo").textContent=playing?"":n?n+" step"+(n>1?"s":"")+" added"+(F.name?" · "+F.name:""):(F.name?F.name:"");
+  $("#fPlay").disabled=n<2||!!playing;
+  $("#fClearSteps").disabled=!n||!!playing;
   [].forEach.call(document.querySelectorAll("[data-us]"),function(b){b.setAttribute("aria-pressed",b.getAttribute("data-us")===F.form?"true":"false");});
   [].forEach.call(document.querySelectorAll("[data-them]"),function(b){var v=b.getAttribute("data-them");b.setAttribute("aria-pressed",(F.show?v===F.them:v==="off")?"true":"false");});
   [].forEach.call(document.querySelectorAll("[data-tool]"),function(b){b.setAttribute("aria-pressed",b.getAttribute("data-tool")===tool?"true":"false");});
@@ -642,7 +671,108 @@ function fSlot(k){
   return F.pos[k.slice(2)];
 }
 
+/* ---------- steps: build an animation on the free board ---------- */
+var playing=null;
+function snap(s){
+  return JSON.parse(JSON.stringify({form:s.form,them:s.them,show:s.show,pos:s.pos,opp:s.opp,ball:s.ball,lines:s.lines}));
+}
+function lerp2(a,b,t){return [a[0]+(b[0]-a[0])*t,a[1]+(b[1]-a[1])*t];}
+/* in-between frame: players glide if the formation stays the same; lines show once a step is reached */
+function between(A,B,t){
+  var o={form:B.form,them:B.them,show:B.show,pos:{},opp:B.opp,ball:lerp2(A.ball,B.ball,t),lines:t>=1?B.lines:[]};
+  for(var id in B.pos){o.pos[id]=A.form===B.form&&A.pos[id]?lerp2(A.pos[id],B.pos[id],t):B.pos[id];}
+  if(A.show&&B.show&&A.them===B.them){o.opp=B.opp.map(function(p,i){return lerp2(A.opp[i],p,t);});}
+  return o;
+}
+function fStop(){
+  if(!playing){return;}
+  cancelAnimationFrame(playing.raf);playing=null;
+  fb.classList.remove("playing");$("#fPlay").innerHTML="&#9654; Play";fRender();
+}
+function fPlay(){
+  var steps=F.steps||[];
+  if(steps.length<2){return;}
+  var MOVEMS=1500*(S.slow?1.6:1),HOLDMS=1100*(S.slow?1.6:1);
+  playing={i:0,t0:null,raf:0};
+  fb.classList.add("playing");$("#fPlay").textContent="Stop";
+  function frame(ts){
+    if(!playing){return;}
+    if(playing.t0===null){playing.t0=ts;}
+    var i=playing.i,el2=ts-playing.t0,cur;
+    if(el2<HOLDMS){cur=steps[i];}
+    else if(i<steps.length-1){
+      var k=Math.min(1,(el2-HOLDMS)/MOVEMS);cur=between(steps[i],steps[i+1],ease(k));
+      if(k>=1){playing.i++;playing.t0=ts;}
+    }else{fStop();return;}
+    fDraw(cur,fLines,fOpp,fUs,fBall);
+    $("#fStepInfo").textContent="Step "+(Math.min(playing.i,steps.length-1)+1)+" of "+steps.length;
+    playing.raf=requestAnimationFrame(frame);
+  }
+  fRender();
+  playing.raf=requestAnimationFrame(frame);
+}
+
+/* ---------- saved boards (on this device) ---------- */
+var SB_KEY="hawksSavedBoards";
+function sbLoad(){try{var x=JSON.parse(localStorage.getItem(SB_KEY));return Array.isArray(x)?x:[];}catch(e){return [];}}
+function sbStore(list){try{localStorage.setItem(SB_KEY,JSON.stringify(list));return true;}catch(e){return false;}}
+function fSaveBoard(){
+  var steps=(F.steps&&F.steps.length)?F.steps:[snap(F)];
+  var list=sbLoad();
+  var name=window.prompt("Name this board (e.g. Corner v Parks)",F.name||"Board "+(list.length+1));
+  if(name===null){return;}
+  name=name.trim()||"Board "+(list.length+1);
+  var same=list.filter(function(b){return b.name.toLowerCase()===name.toLowerCase();})[0];
+  if(same&&!window.confirm('Replace your saved board "'+same.name+'"?')){return;}
+  list=list.filter(function(b){return b!==same;});
+  list.unshift({id:String(Date.now()),name:name,saved:new Date().toISOString(),steps:JSON.parse(JSON.stringify(steps))});
+  if(!sbStore(list)){window.alert("Couldn't save on this device. Storage may be full or turned off.");return;}
+  F.name=name;fRender();
+  $("#fStepInfo").textContent="Saved: "+name;
+}
+function thumb(s){
+  var NSs="http://www.w3.org/2000/svg",svg=document.createElementNS(NSs,"svg");
+  svg.setAttribute("viewBox","-3 -4 74 108");svg.setAttribute("aria-hidden","true");
+  svg.innerHTML='<rect x="-3" y="-4" width="74" height="108" fill="#24603f"/><rect x="0" y="0" width="68" height="100" fill="#2f7a4f"/>'+
+    '<g fill="none" stroke="#f2f5ec" stroke-width=".5"><rect x="0" y="0" width="68" height="100"/><line x1="0" y1="50" x2="68" y2="50"/><circle cx="34" cy="50" r="7"/><rect x="17" y="0" width="34" height="14"/><rect x="17" y="86" width="34" height="14"/></g>';
+  var lg=el("g",{},svg),og=el("g",{},svg),ug=el("g",{},svg),bl=el("circle",{r:1.7,fill:"#fff",stroke:"#18211c","stroke-width":.4},svg);
+  fDraw(s,lg,og,ug,bl);
+  return svg;
+}
+function renderSaved(){
+  var box=$("#savedList"),list=sbLoad();
+  box.innerHTML="";
+  if(!list.length){box.innerHTML='<p class="sb-empty">No saved boards yet. Set one up on the <b>Free board</b> and tap <b>Save board</b>.</p>';return;}
+  var grid=document.createElement("div");grid.className="sb-grid";
+  list.forEach(function(b){
+    var c=document.createElement("div");c.className="sb";
+    c.appendChild(thumb(b.steps[b.steps.length-1]));
+    var d=new Date(b.saved).toLocaleDateString("en-GB",{day:"numeric",month:"short"});
+    var info=document.createElement("div");info.className="sb-b";
+    info.innerHTML='<p class="sb-n"></p><p class="sb-m"></p><div class="seg"><button type="button" data-sb="open">Open</button>'+
+      (b.steps.length>1?'<button type="button" data-sb="play" class="sv">&#9654; Play</button>':'')+'<button type="button" data-sb="del">Delete</button></div>';
+    info.querySelector(".sb-n").textContent=b.name;
+    info.querySelector(".sb-m").textContent=(b.steps.length>1?b.steps.length+" steps":"Still board")+" · "+FORMS[b.steps[0].form].label+" · saved "+d;
+    info.addEventListener("click",function(e){
+      var t=e.target.closest("[data-sb]");if(!t){return;}
+      var act=t.getAttribute("data-sb");
+      if(act==="del"){
+        if(window.confirm('Delete "'+b.name+'"? This can\'t be undone.')){sbStore(sbLoad().filter(function(x){return x.id!==b.id;}));renderSaved();}
+        return;
+      }
+      if((F.steps||[]).length&&!F.name&&!window.confirm("Replace the board you're working on? Its steps aren't saved.")){return;}
+      var steps=JSON.parse(JSON.stringify(b.steps));
+      F=snap(steps[0]);F.steps=steps.length>1?steps:[];F.name=b.name;
+      history.replaceState(null,"","#free");setMode("free");
+      if(act==="play"){fPlay();}
+    });
+    c.appendChild(info);grid.appendChild(c);
+  });
+  box.appendChild(grid);
+}
+
 fsvg.addEventListener("pointerdown",function(e){
+  if(playing){return;}
   var p=svgPt(fsvg,e);
   if(tool==="move"){
     var t=e.target.closest("[data-k]");
@@ -683,6 +813,11 @@ fsvg.addEventListener("pointercancel",fEnd);
 fb.addEventListener("click",function(e){
   var b=e.target.closest("button");
   if(!b){return;}
+  if(b.id==="fPlay"){if(playing){fStop();}else{fPlay();}return;}
+  if(playing){fStop();}
+  if(b.id==="fAddStep"){F.steps=(F.steps||[]).concat([snap(F)]);fRender();$("#fStepInfo").textContent="Step "+F.steps.length+" added";return;}
+  if(b.id==="fClearSteps"){if(window.confirm("Clear all the steps? Your board stays as it is.")){F.steps=[];}fRender();return;}
+  if(b.id==="fSaveBoard"){fSaveBoard();return;}
   if(b.hasAttribute("data-us")){F.form=b.getAttribute("data-us");F.pos=kick(F.form);}
   else if(b.hasAttribute("data-them")){
     var v=b.getAttribute("data-them");
@@ -696,7 +831,7 @@ fb.addEventListener("click",function(e){
     else if(b.getAttribute("data-preset")==="defcorner"){F.pos=defCornerStart(F.form);F.them="f341";F.opp=cp(THEIR_CORNER);F.show=true;F.ball=[1,99];F.lines=[];}
     else{F.pos=kick(F.form);F.show=true;F.opp=theirs(F.them);F.ball=[34,50];F.lines=[];}
   }
-  else if(b.id==="fReset"){F=fresh();}
+  else if(b.id==="fReset"){F=fresh();F.steps=[];}
   else if(b.id==="fFull"){if(fbFull()){fbExit();}else{fbEnter();}return;}
   fRender();
 });
@@ -726,22 +861,24 @@ document.addEventListener("webkitfullscreenchange",fsChange);
 var mode="watch";
 function setMode(m){
   mode=m;
-  $("#watchMode").hidden=m!=="watch";$("#freeMode").hidden=m!=="free";
+  $("#watchMode").hidden=m!=="watch";$("#freeMode").hidden=m!=="free";$("#savedMode").hidden=m!=="saved";
   [].forEach.call(document.querySelectorAll("[data-mode]"),function(b){b.setAttribute("aria-pressed",b.getAttribute("data-mode")===m?"true":"false");});
+  if(m!=="free"){fStop();}
   if(m==="free"){S.playing=false;ui();fRender();}
   else if(fbFull()){fbExit();}
+  if(m==="saved"){S.playing=false;ui();renderSaved();}
 }
 [].forEach.call(document.querySelectorAll("[data-mode]"),function(b){
   b.addEventListener("click",function(){
     var m=b.getAttribute("data-mode");
-    history.replaceState(null,"",m==="free"?"#free":"#"+FORMS[S.form].scenes[S.scene].key);
+    history.replaceState(null,"",m==="watch"?"#"+FORMS[S.form].scenes[S.scene].key:"#"+m);
     setMode(m);
   });
 });
 
 buildPlayers();
 loadScene(false);
-setMode(location.hash==="#free"?"free":"watch");
+setMode(location.hash==="#free"?"free":location.hash==="#saved"?"saved":"watch");
 requestAnimationFrame(tick);
 })();
 </script>
