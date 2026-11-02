@@ -199,7 +199,9 @@
     "Brandesburton Recreation Ground": [53.912, -0.303],
     "Allam Sport Centre, Grass 3": [53.773, -0.369],
     "South Cave Sporting Club": [53.769, -0.601],
-    "Haworth Park": [53.783, -0.361]
+    "Haworth Park": [53.783, -0.361],
+    "Springhead Avenue Playing Fields": [53.765, -0.415],
+    "Courtland Road Playing Fields": [53.778, -0.386]
   };
   var WX_AGE = 3600e3; /* reuse a forecast for an hour */
 

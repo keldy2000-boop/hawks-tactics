@@ -144,6 +144,17 @@ ul.plain li::marker{color:var(--sky)}
   font-size:.78rem;border-radius:3px;padding:2px 8px}
 .nm-home{background:var(--maroon);color:#fff}
 .nm-away{background:var(--sky);color:#3B0F16}
+.nm-cup{background:#e8b33a;color:#3B0F16}
+/* our season */
+.os-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;margin:0 0 4px}
+.os-stats div{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.os-n{font-family:'Archivo Black',sans-serif;font-size:1.6rem;line-height:1;color:var(--paper)}
+.os-l{font-family:'Barlow Condensed',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:.08em;font-size:.78rem;color:var(--mute)}
+.os-res{margin-top:16px}
+.os-r{display:inline-block;min-width:58px;font-family:'Archivo Black',sans-serif;font-size:.85rem;border-radius:3px;padding:1px 6px;text-align:center}
+.os-win{background:#2f7a4f;color:#fff}
+.os-draw{background:var(--line);color:var(--paper)}
+.os-loss{background:var(--maroon);color:#fff}
 .nm-vs{display:flex;flex-direction:column;gap:2px;margin-bottom:14px}
 .nm-us{font-family:'Archivo Black',sans-serif;text-transform:uppercase;font-size:clamp(1.5rem,5vw,2rem);line-height:1}
 .nm-v{color:var(--mute);font-weight:600}

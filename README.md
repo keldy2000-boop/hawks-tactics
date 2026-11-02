@@ -37,6 +37,7 @@ No build step and no dependencies. Open any page in a browser, or publish the fo
 | Team colours | `assets/site.css`: `--maroon` (claret) and `--sky` (sky blue) at the top, taken from the crest |
 | League table, fixtures, next match | `assets/league.js` (copy from FA Full-Time after each matchday; FA Full-Time can't be read live from the site) |
 | Meet time | `assets/league.js`: `MEET_BEFORE` (30 minutes before kick-off) |
+| Our results and goals for/against | `assets/league.js`: `results` (newest first; add `"Cup"` for cup ties). The Our season box on Home works out the totals |
 | Home-screen icon | `assets/icon-*.png` (made from the crest) and `manifest.webmanifest` |
 | Message of the week | `assets/messages.js` (one line per week, changes every Monday) |
 | Board animations | `board.html`: the `FORMS` block |
