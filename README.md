@@ -10,7 +10,7 @@ The playbook site for the Hawks: U12 girls, 9-a-side, playing 3-4-1 and 2-4-2. P
 index.html            Home: next match, league table, and all our fixtures at the bottom
 roles.html            Game Day tab opens here: how we play, your role in each position, three team rules
 game-day.html         Old Game Day page, now a redirect to roles.html so old links keep working
-board.html            Tactics Board: animated moments (shape, build-up, press, defend, attack) with
+board.html            Tactics Board: animated moments (shape, build-up, press, defend, attack, kick-offs) with
                       draggable counters, plus a free board (both teams, draw runs and passes, full screen,
                       start from kick-off, our corner or their corner)
 play-forward.html     The Ten Rules: ten attacking principles, each with a clip from assets/clips/
@@ -18,6 +18,7 @@ set-piece-roles.html  Every position's job at every restart
 goal-kicks.html       Our goal kicks and pressing theirs, with diagrams
 corners.html          Attacking and defending corners, with diagrams
 throw-ins.html        Our throw-ins, with diagrams
+kick-offs.html        Our kick-off routine and pressing theirs, with diagrams (animated on the Tactics Board)
 training.html         Training: when and where, this block's focus, what to bring, practise at home
 parents.html          Parents' guide
 table.html            Old Fixtures page, now a redirect to the fixtures on Home so old links keep working
@@ -42,7 +43,7 @@ No build step and no dependencies. Open any page in a browser, or publish the fo
 | Message of the week | `assets/messages.js` (one line per week, changes every Monday) |
 | Board animations | `board.html`: the `FORMS` block |
 | Set-piece jobs per position | `set-piece-roles.html`: the `JOBS` block |
-| Set-piece diagrams | `assets/goalkick-*.svg`, `theirkick-*.svg`, `corner-*.svg`, `defcorner-*.svg`, `throwin-*.svg` (one per formation). Swap a file to change a diagram. To redraw one, set it out on the free board first |
+| Set-piece diagrams | `assets/goalkick-*.svg`, `theirkick-*.svg`, `corner-*.svg`, `defcorner-*.svg`, `throwin-*.svg`, `ourko-*.svg`, `theirko-*.svg` (one per formation). Swap a file to change a diagram. To redraw one, set it out on the free board first |
 | The Ten Rules and clips | `play-forward.html`: one `<article class="pcard">` per rule. Clips go in `assets/clips/` as `name.mp4` with a poster frame `name.jpg` (360px wide). Add a row to the session log at the bottom after each session |
 
 The formation is picked with the 3-4-1 / 2-4-2 switch at the right-hand end of the top tab bar on every page, and is remembered on each phone. Content for one formation only goes inside `data-form="f341"` or `data-form="f242"`. A link can force a formation: `roles.html?f=242`.

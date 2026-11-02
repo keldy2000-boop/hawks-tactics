@@ -217,6 +217,11 @@ var OPP_BUILD=[[34,8],[20,22],[34,17],[48,22],[6,36],[62,36],[24,42],[40,40],[42
 var OPP_ATT=[[34,22],[20,34],[34,36],[48,34],[8,54],[60,52],[20,46],[48,44],[34,62]];
 var OPP_DEF=[[34,6],[16,22],[34,18],[52,22],[10,36],[58,36],[28,34],[42,36],[30,52]];
 var OPP_BOX=[[34,5],[22,14],[34,12],[50,14],[15,28],[52,32],[26,30],[42,30],[34,42]];
+/* their shape at our kick-off, as the coaches set it out on the free board */
+var OPP_KO341=[[34,7],[21.3,18.5],[34,15.3],[44,20.7],[6.6,46.9],[59,45.7],[27.1,30.8],[42.4,32.8],[34.2,41.5]];
+var OPP_KO242=[[34,7],[18,16.4],[34,15.3],[50,16.4],[8,43.5],[59.4,43.7],[26,28.9],[41,37.7],[34,42]];
+/* their kick-off, as the coaches set it out */
+var OPP_THEIRKO=[[34,7],[18,28.1],[33.9,22.8],[51.3,26.9],[10.3,46.7],[58.6,46.4],[28.4,35.3],[40.1,35.5],[34,45.4]];
 
 /* scene "key" is used for links from other pages, e.g. board.html#press */
 var FORMS={
@@ -266,6 +271,17 @@ var FORMS={
     {c:"10 plays it wide to the wing back, who runs forward on the outside.",b:"LWB",p:{LWB:[8,36],TEN:[30,36],LCM:[27,46]},o:function(o){return om(o,{4:[16,37],1:[16,25],6:[38,38],7:[46,34]});}},
     {c:"Cross comes in. The 9 goes near post, the 10 far post, the wing back arrives at the back, a midfielder waits on the edge.",b:"NINE",o:OPP_BOX,p:{LWB:[8,24],NINE:[29,18],TEN:[44,20],RWB:[58,26],LCM:[34,30],RCM:[44,40],LCB:[24,56],RCB:[44,56],GK:[34,80]}},
     {c:"The 9 finishes. Everyone else is ready for the rebound.",b:[34,3],p:{NINE:[31,12]},o:function(o){return om(o,{2:[38,15]});}}
+   ]},
+   {key:"kick-off",name:"Kick-off",aim:"Our kick-off: a high ball down our left for the wing back to chase.",steps:[
+    {c:"Kick-off. The 9 on the ball, the 10 just behind, wing backs wide on halfway.",o:OPP_KO242,b:"NINE",p:{GK:[34,93],LCB:[22.3,79.3],RCB:[45.1,79.9],LWB:[8.2,50.7],RWB:[60.2,50.5],LCM:[21.6,65.3],RCM:[45.2,63.2],TEN:[32.6,56.3],NINE:[35.9,48]}},
+    {c:"The 9 taps it back to the 10.",b:"TEN"},
+    {c:"The 10 plays a high ball into their right-back area. The left wing back sprints onto it, the 9 and 10 follow up, the right wing back comes infield, a centre mid runs forward, the other moves to the centre circle and the centre backs push up.",b:[10.6,20],p:{LWB:[7.9,16.1],TEN:[35,22.5],NINE:[26.8,15.4],RCM:[32.1,33.2],LCM:[32.7,48.5],RWB:[48,23],RCB:[44.1,64.7],LCB:[22.2,62.9]}},
+    {c:"If it breaks down, we drop back into shape.",b:"o1",p:{GK:[34,93],LCB:[24,76],RCB:[44,76],LWB:[8,56],RWB:[60,56],LCM:[25,56],RCM:[43,56],TEN:[27,40],NINE:[41,31]}}
+   ]},
+   {key:"their-kick-off",name:"Their kick-off",aim:"Their kick-off: hold our shape, then press when they play it back.",steps:[
+    {c:"Their kick-off. We hold our shape, ready to press.",o:OPP_THEIRKO,b:[34,48.6],p:{GK:[34,93],LCB:[24,83],RCB:[44,83],LWB:[8.5,53.5],RWB:[59.2,54.3],LCM:[17.9,69.9],RCM:[49.6,70.2],TEN:[27,58.7],NINE:[41,54]}},
+    {c:"They play it back to a centre mid: that's the trigger. The 9 and 10 hunt the ball, the wing backs step in front of their wingers, the centre mids form the spine and the centre backs step up a little.",b:"o7",p:{NINE:[39.3,42],TEN:[28,43.5],LWB:[15,51],RWB:[54,51],LCM:[29.5,62.5],RCM:[38.5,62.5],LCB:[25,76],RCB:[43,76]}},
+    {c:"If the ball goes wide to their winger, the wing back follows her.",b:"o4",p:{LWB:[13.5,52.6]},o:function(o){return om(o,{4:[8.5,47.5]});}}
    ]}
   ]
  },
@@ -314,6 +330,16 @@ var FORMS={
     {c:"Lay it off, then the winger runs beyond. The ball goes into the space down the line.",b:"LW",p:{LW:[7,36],LCM:[28,44]},o:function(o){return om(o,{4:[16,37],1:[16,25],6:[38,38],7:[46,34]});}},
     {c:"Cross comes in. Striker near post, right winger far post, a midfielder waits on the edge.",b:"ST",o:OPP_BOX,p:{LW:[8,24],ST:[29,18],RW:[48,22],LCM:[34,32],RCM:[44,40],LCB:[22,60],CB:[34,62],RCB:[46,60],GK:[34,80]}},
     {c:"The striker finishes. Everyone else is ready for the rebound.",b:[34,3],p:{ST:[31,12]},o:function(o){return om(o,{2:[38,15]});}}
+   ]},
+   {key:"kick-off",name:"Kick-off",aim:"Our kick-off: a high ball down our left for the winger to chase.",steps:[
+    {c:"Kick-off. The striker on the ball, a centre mid just behind, wingers wide on halfway.",o:OPP_KO341,b:"ST",p:{GK:[34,93],LCB:[22.3,74.2],CB:[34,84.7],RCB:[44.3,75.1],LW:[6.1,53.7],LCM:[33.6,56.8],RCM:[34.3,67.9],RW:[58.9,52.6],ST:[34.2,50.3]}},
+    {c:"The striker taps it back to the high centre mid.",b:"LCM"},
+    {c:"She plays a high ball into their right-back area. The left winger sprints onto it, the striker and high centre mid follow up, the right winger comes infield, the deep centre mid moves up to the centre circle and the back three push up.",b:[10.6,22.2],p:{LW:[7.5,19.6],ST:[27.2,21],LCM:[34,22.5],RW:[50.4,23.5],RCM:[34,48],RCB:[44.1,61.6],LCB:[23.4,59.3],CB:[34.3,68]}},
+    {c:"If it breaks down, we drop back into shape.",b:"o1",p:{GK:[34,93],LCB:[18,77],CB:[34,79],RCB:[50,77],LW:[8,54.5],LCM:[26,56],RCM:[42,56],RW:[60,52],ST:[34,28]}}
+   ]},
+   {key:"their-kick-off",name:"Their kick-off",aim:"Their kick-off: hold our shape, then press when they play it back.",steps:[
+    {c:"Their kick-off. We hold our shape, ready to press.",o:OPP_THEIRKO,b:[34,48.6],p:{GK:[34,93],LCB:[16.2,71.5],CB:[33.7,75.2],RCB:[53.1,72.2],LW:[9.9,53.4],LCM:[23.1,64.4],RCM:[44.2,64],RW:[59,54.2],ST:[34,54.6]}},
+    {c:"They play it back to a centre mid: that's the trigger. The striker hunts the ball, the wingers step inside to close the middle, the centre mids step up and the wide centre backs pick up their wingers.",b:"o7",p:{ST:[34.3,38.1],LW:[19.6,40.8],RW:[51.4,40.8],RCM:[46.8,53.5],LCM:[21.5,55.4],RCB:[58.5,64.9],LCB:[7.7,66.8]}}
    ]}
   ]
  }

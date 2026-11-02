@@ -22,6 +22,7 @@
     ["goal-kicks", "Goal Kicks", "game-day"],
     ["corners", "Corners", "game-day"],
     ["throw-ins", "Throw-Ins", "game-day"],
+    ["kick-offs", "Kick-Offs", "game-day"],
     ["training", "Training"],
     ["parents", "Parents"]
   ];

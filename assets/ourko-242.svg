@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-3 -4 74 108" role="img" aria-label="Our kick-off in the 2-4-2: the 9 taps it back to the 10, who plays a high ball into their right-back area down our left. The left wing back sprints onto it, the 9 and the 10 follow up, the right wing back comes infield, the right centre mid runs forward, the left centre mid moves to the centre circle and the centre backs push up.">
+<defs>
+<marker id="kg" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="3.2" markerHeight="3.2" orient="auto"><path d="M0 0L10 5L0 10z" fill="#e8b33a"/></marker>
+<marker id="kw" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="3.2" markerHeight="3.2" orient="auto"><path d="M0 0L10 5L0 10z" fill="#ffffff"/></marker>
+</defs>
+<rect x="-3" y="-4" width="74" height="108" fill="#24603f"/><rect x="0" y="0" width="68" height="100" fill="#2f7a4f"/>
+<g fill="#000" opacity=".07"><rect x="0" y="10" width="68" height="10"/><rect x="0" y="30" width="68" height="10"/><rect x="0" y="50" width="68" height="10"/><rect x="0" y="70" width="68" height="10"/><rect x="0" y="90" width="68" height="10"/></g>
+<g fill="none" stroke="#f2f5ec" stroke-width=".5"><rect x="0" y="0" width="68" height="100"/><line x1="0" y1="50" x2="68" y2="50"/><circle cx="34" cy="50" r="7"/><rect x="17" y="0" width="34" height="14"/><rect x="26" y="0" width="16" height="5"/><rect x="17" y="86" width="34" height="14"/><rect x="26" y="95" width="16" height="5"/><rect x="29" y="-2.2" width="10" height="2.2"/><rect x="29" y="100" width="10" height="2.2"/></g>
+<!-- target area: their right back, down our left -->
+<ellipse cx="9.5" cy="18.5" rx="7" ry="5" fill="#e8b33a" opacity=".16"/>
+<!-- runs (as drawn on the board) -->
+<g fill="none" stroke="#ffffff" stroke-width=".7" stroke-dasharray="1.6 1.2" marker-end="url(#kw)">
+<path d="M8.6 50.3L7.9 16.1"/>
+<path d="M32.5 56.5L34.6 20.2"/>
+<path d="M36.7 48L26.8 15.4"/>
+<path d="M46.5 63.8L32.1 33.2"/>
+<path d="M22.9 65.4L32.7 46"/>
+<path d="M60.4 50.8L48 23"/>
+<path d="M45.5 81.2L44.1 64.7"/>
+<path d="M22 79.5L22.2 62.9"/>
+</g>
+<!-- 1: tap back to the 10. 2: high ball into their right-back area -->
+<path d="M36.4 51.4L33.9 54.1" fill="none" stroke="#e8b33a" stroke-width=".8" marker-end="url(#kg)"/>
+<path d="M32.8 54.7L10.8 20.6" fill="none" stroke="#e8b33a" stroke-width=".9" marker-end="url(#kg)"/>
+<g font-family="Arial,sans-serif" font-weight="800" font-size="2.8" text-anchor="middle">
+<g transform="translate(40 54.6)"><circle r="2.2" fill="#e8b33a"/><text y="1" fill="#3b0f16">1</text></g>
+<g transform="translate(18.4 38.6)"><circle r="2.2" fill="#e8b33a"/><text y="1" fill="#3b0f16">2</text></g>
+</g>
+<g font-family="Arial,sans-serif" font-weight="800" font-size="2.3" fill="#e6e6ea" text-anchor="middle">
+<g transform="translate(34 7)"><circle r="3.3" fill="#3a3a42" stroke="#a2a2ab" stroke-width=".5"/><text y=".85">GK</text></g>
+<g transform="translate(50 16.4)"><circle r="3.3" fill="#3a3a42" stroke="#a2a2ab" stroke-width=".5"/><text y=".85">CB</text></g>
+<g transform="translate(34 15.3)"><circle r="3.3" fill="#3a3a42" stroke="#a2a2ab" stroke-width=".5"/><text y=".85">CB</text></g>
+<g transform="translate(18 16.4)"><circle r="3.3" fill="#3a3a42" stroke="#a2a2ab" stroke-width=".5"/><text y=".85">CB</text></g>
+<g transform="translate(59.4 43.7)"><circle r="3.3" fill="#3a3a42" stroke="#a2a2ab" stroke-width=".5"/><text y=".85">W</text></g>
+<g transform="translate(41 37.7)"><circle r="3.3" fill="#3a3a42" stroke="#a2a2ab" stroke-width=".5"/><text y=".85">CM</text></g>
+<g transform="translate(26 28.9)"><circle r="3.3" fill="#3a3a42" stroke="#a2a2ab" stroke-width=".5"/><text y=".85">CM</text></g>
+<g transform="translate(7.7 45.4)"><circle r="3.3" fill="#3a3a42" stroke="#a2a2ab" stroke-width=".5"/><text y=".85">W</text></g>
+<g transform="translate(34 42)"><circle r="3.3" fill="#3a3a42" stroke="#a2a2ab" stroke-width=".5"/><text y=".85">ST</text></g>
+</g>
+<g transform="translate(34 93)"><circle r="3.9" fill="#b3c8ea" stroke="#fff" stroke-width=".55"/><text y="1" text-anchor="middle" font-family="Arial,sans-serif" font-weight="800" font-size="2.8" fill="#5a1a22">GK</text></g>
+<g font-family="Arial,sans-serif" font-weight="800" font-size="2.8" fill="#fff" text-anchor="middle">
+<g transform="translate(22.3 79.3)"><circle r="3.9" fill="#8e2b33" stroke="#fff" stroke-width=".55"/><text y="1">CB</text></g>
+<g transform="translate(45.1 79.9)"><circle r="3.9" fill="#8e2b33" stroke="#fff" stroke-width=".55"/><text y="1">CB</text></g>
+<g transform="translate(8.2 50.7)"><circle r="3.9" fill="#8e2b33" stroke="#fff" stroke-width=".55"/><text y="1">WB</text></g>
+<g transform="translate(60.2 50.5)"><circle r="3.9" fill="#8e2b33" stroke="#fff" stroke-width=".55"/><text y="1">WB</text></g>
+<g transform="translate(21.6 65.3)"><circle r="3.9" fill="#8e2b33" stroke="#fff" stroke-width=".55"/><text y="1">CM</text></g>
+<g transform="translate(45.2 63.2)"><circle r="3.9" fill="#8e2b33" stroke="#fff" stroke-width=".55"/><text y="1">CM</text></g>
+<g transform="translate(32.6 56.3)"><circle r="3.9" fill="#8e2b33" stroke="#fff" stroke-width=".55"/><text y="1">10</text></g>
+<g transform="translate(35.9 48)"><circle r="3.9" fill="#8e2b33" stroke="#fff" stroke-width=".55"/><text y="1">9</text></g>
+</g>
+<circle cx="38.6" cy="50" r="1.3" fill="#fff" stroke="#18211c" stroke-width=".4"/>
+</svg>
